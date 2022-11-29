@@ -2,7 +2,7 @@ package kim.figure.site.management.content;
 
 import kim.figure.site.common.content.Content;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.r2dbc.repository.R2dbcRepository;
+import org.springframework.data.mongodb.repository.ReactiveMongoRepository;
 import reactor.core.publisher.Flux;
 
 /**
@@ -10,6 +10,6 @@ import reactor.core.publisher.Flux;
  * date           : 2022. 08. 28.
  * description    :
  */
-public interface ContentRepository extends R2dbcRepository<Content, String> {
+public interface ContentRepository extends ReactiveMongoRepository<Content, String> {
     Flux<Content> findBy(Pageable pageable);
 }

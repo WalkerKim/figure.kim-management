@@ -1,129 +1,45 @@
 <script>
-	import { page } from '$app/stores';
-	import logo from '$lib/images/svelte-logo.svg';
-	import github from '$lib/images/github.svg';
+    import {page} from '$app/stores';
+    import logo from '$lib/images/Figure.kim-200.png';
+    import github from '$lib/images/github.svg';
 </script>
 
 <header>
-	<div class="corner">
-		<a href="https://kit.svelte.dev">
-			<img src={logo} alt="SvelteKit" />
-		</a>
-	</div>
-
-	<nav>
-		<svg viewBox="0 0 2 3" aria-hidden="true">
-			<path d="M0,0 L1,2 C1.5,3 1.5,3 2,3 L2,0 Z" />
-		</svg>
-		<ul>
-			<li aria-current={$page.url.pathname === '/' ? 'page' : undefined}>
-				<a href="/">Home</a>
-			</li>
-			<li aria-current={$page.url.pathname === '/post' ? 'page' : undefined}>
-				<a href="/post">Posting</a>
-			</li>
-			<li aria-current={$page.url.pathname.startsWith('/post-list') ? 'page' : undefined}>
-				<a href="/post-list">Post List</a>
-			</li>
-		</ul>
-		<svg viewBox="0 0 2 3" aria-hidden="true">
-			<path d="M0,0 L0,3 C0.5,3 0.5,3 1,2 L2,0 Z" />
-		</svg>
-	</nav>
-
-	<div class="corner">
-		<a href="https://github.com/sveltejs/kit">
-			<img src={github} alt="GitHub" />
-		</a>
-	</div>
+    <div class="text-gray-500 body-font pb-1 h-16 fixed bg-custom-black-900 w-full z-20 h-20">
+        <div class="mx-auto flex flex-wrap sm:px-5 px-0 sm:flex-row items-center">
+            <a href="/" class="flex my-5 title-font font-medium items-center text-gray-900 cursor-pointer sm:pl-0 pl-5">
+                <img src={logo} alt="SvelteKit" class="max-h-10"/>
+                <span class="flex sm:hidden md:flex ml-3 lg:text-xl text-white">Figuer.kim</span><span
+                    class="flex sm:hidden md:flex ml-3 lg:text-xl text-green-400">Manager</span>
+            </a>
+            <nav class="z-50 mr-auto sm:ml-2 sm:pl-4 sm:border-gray-s00 sm:flex sm:flex-wrap items-center text-base justify-center w-auto">
+                <div class="mt-5 sm:mt-0 mb-0 sm:-mb-0.5 sm:w-auto w-full sm:block sm:relative fixed left-0 bottom-0">
+                    <ul>
+                        <li
+                            class="-mr-1 sm:mr-5 sm:hover:text-gray-300 cursor-pointer my-0 sm:my-1 border-t-transparent py-5 sm:px-2 sm:w-auto w-1/2 sm:inline inline-block text-center
+                                    {$page.url.pathname === '/' ? 'sm:border-b-2 sm:border-green-400 text-white hover:text-green-300 sm:text-green-400 mb-0 bg-green-400 sm:bg-opacity-0 ':'bg-gray-800 sm:bg-opacity-0'}
+                            ">
+                            <a href="/">Home</a>
+                        </li>
+                        <li
+                            class="-mr-1 sm:mr-5 sm:hover:text-gray-300 cursor-pointer my-0 sm:my-1 border-t-transparent py-5 sm:px-2 sm:w-auto w-1/2 sm:inline inline-block text-center
+                                    {$page.url.pathname === '/post' ? 'sm:border-b-2 sm:border-green-400 text-white hover:text-green-300 sm:text-green-400 mb-0 bg-green-400 sm:bg-opacity-0 ':'bg-gray-800 sm:bg-opacity-0'}
+                            ">
+                            <a href="/post">Posting</a>
+                        </li>
+                        <li
+                            class="-mr-1 sm:mr-5 sm:hover:text-gray-300 cursor-pointer my-0 sm:my-1 border-t-transparent py-5 sm:px-2 sm:w-auto w-1/2 sm:inline inline-block text-center
+                                    {$page.url.pathname === '/post-list' ? 'sm:border-b-2 sm:border-green-400 text-white hover:text-green-300 sm:text-green-400 mb-0 bg-green-400 sm:bg-opacity-0 ':'bg-gray-800 sm:bg-opacity-0'}
+                            ">
+                            <a href="/post-list">Post List</a>
+                        </li>
+                    </ul>
+                </div>
+            </nav>
+        </div>
+    </div>
 </header>
 
 <style>
-	header {
-		display: flex;
-		justify-content: space-between;
-	}
 
-	.corner {
-		width: 3em;
-		height: 3em;
-	}
-
-	.corner a {
-		display: flex;
-		align-items: center;
-		justify-content: center;
-		width: 100%;
-		height: 100%;
-	}
-
-	.corner img {
-		width: 2em;
-		height: 2em;
-		object-fit: contain;
-	}
-
-	nav {
-		display: flex;
-		justify-content: center;
-		--background: rgba(255, 255, 255, 0.7);
-	}
-
-	svg {
-		width: 2em;
-		height: 3em;
-		display: block;
-	}
-
-	path {
-		fill: var(--background);
-	}
-
-	ul {
-		position: relative;
-		padding: 0;
-		margin: 0;
-		height: 3em;
-		display: flex;
-		justify-content: center;
-		align-items: center;
-		list-style: none;
-		background: var(--background);
-		background-size: contain;
-	}
-
-	li {
-		position: relative;
-		height: 100%;
-	}
-
-	li[aria-current='page']::before {
-		--size: 6px;
-		content: '';
-		width: 0;
-		height: 0;
-		position: absolute;
-		top: 0;
-		left: calc(50% - var(--size));
-		border: var(--size) solid transparent;
-		border-top: var(--size) solid var(--color-theme-1);
-	}
-
-	nav a {
-		display: flex;
-		height: 100%;
-		align-items: center;
-		padding: 0 0.5rem;
-		color: var(--color-text);
-		font-weight: 700;
-		font-size: 0.8rem;
-		text-transform: uppercase;
-		letter-spacing: 0.1em;
-		text-decoration: none;
-		transition: color 0.2s linear;
-	}
-
-	a:hover {
-		color: var(--color-theme-1);
-	}
 </style>

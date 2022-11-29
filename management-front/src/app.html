@@ -1,12 +1,15 @@
 <!DOCTYPE html>
 <html lang="en">
+<script>
+	const serverAddress = "http://localhost:8888"
+</script>
 	<head>
 		<meta charset="utf-8" />
 		<link rel="icon" href="%sveltekit.assets%/favicon.png" />
 		<meta name="viewport" content="width=device-width" />
 		%sveltekit.head%
 	</head>
-	<body data-sveltekit-prefetch>
+	<body data-sveltekit-prefetch class="bg-white">
 		<div style="display: contents">%sveltekit.body%</div>
 	</body>
 </html>

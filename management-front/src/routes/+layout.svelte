@@ -4,55 +4,14 @@
 </script>
 <style  global>
 	@import "./styles.css";
-	@tailwind base;
-	@tailwind components;
-	@tailwind utilities;
 </style>
 <div class="app">
 	<Header />
 
-	<main>
-		<slot />
+	<main class="w-full border-t border-gray-400 -mt-0 pt-8 sm:pl-56 lg:pl-72">
+		<div class="px-4 sm:px-8 pb-20 sm:pb-0 mt-16">
+			<slot />
+		</div>
 	</main>
-
-	<footer>
-		<p>visit <a href="https://kit.svelte.dev">kit.svelte.dev</a> to learn SvelteKit</p>
-	</footer>
 </div>
 
-<!--<style>-->
-<!--	.app {-->
-<!--		display: flex;-->
-<!--		flex-direction: column;-->
-<!--		min-height: 100vh;-->
-<!--	}-->
-
-<!--	main {-->
-<!--		flex: 1;-->
-<!--		display: flex;-->
-<!--		flex-direction: column;-->
-<!--		padding: 1rem;-->
-<!--		width: 100%;-->
-<!--		max-width: 64rem;-->
-<!--		margin: 0 auto;-->
-<!--		box-sizing: border-box;-->
-<!--	}-->
-
-<!--	footer {-->
-<!--		display: flex;-->
-<!--		flex-direction: column;-->
-<!--		justify-content: center;-->
-<!--		align-items: center;-->
-<!--		padding: 12px;-->
-<!--	}-->
-
-<!--	footer a {-->
-<!--		font-weight: bold;-->
-<!--	}-->
-
-<!--	@media (min-width: 480px) {-->
-<!--		footer {-->
-<!--			padding: 12px 0;-->
-<!--		}-->
-<!--	}-->
-<!--</style>-->
