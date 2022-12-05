@@ -10,7 +10,6 @@
         categoryArray = await res.json();
         await tick();
         selectedCategoryIdSet.forEach(categoryId => {
-            console.log(document.getElementById(categoryId))
             document.getElementById('category-'+categoryId).checked = true
         });
     });
@@ -20,8 +19,6 @@
     });
 
     function handleParentCheck() {
-        // console.log(this.dataset.parentId)
-        // console.log(this.checked)
         if(this.checked){
             document.getElementById('category-' + this.dataset.parentId).checked = true;
             selectedCategoryIdSet.add(this.dataset.categoryId)
@@ -35,7 +32,6 @@
             }
             selectedCategoryIdSet.delete(this.dataset.categoryId)
         }
-        // console.log(document.getElementById('parent-category-'+this.dataset.parentId))
 
     }
     function handleChildCheck(){
@@ -48,8 +44,6 @@
         }
         if(this.checked){
             selectedCategoryIdSet.add(this.dataset.categoryId)
-            console.log(selectedCategoryIdSet)
-            console.log(selectedCategoryIdSet.size)
         }else{
             selectedCategoryIdSet.delete(this.dataset.categoryId)
         }
@@ -59,7 +53,7 @@
     <div class="container grid grid-cols-12">
 
         <div class="col-span-12">
-            <h2 class="text-2xl">카테고리 선택{selectedCategoryIdSet.size}</h2>
+            <h2 class="text-2xl">카테고리 선택</h2>
         </div>
         <div class="grid grid-cols-6 col-span-12">
             {#each categoryArray as parentCategory}

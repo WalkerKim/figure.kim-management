@@ -1,7 +1,13 @@
 package kim.figure.site.management.content;
 
+import kim.figure.site.common.category.Category;
 import kim.figure.site.common.content.ContentFormat;
+import kim.figure.site.common.tag.Tag;
+import lombok.*;
+import org.springframework.data.annotation.CreatedDate;
+import org.springframework.data.mongodb.core.mapping.DBRef;
 
+import java.time.Instant;
 import java.time.ZonedDateTime;
 import java.util.List;
 
@@ -12,11 +18,17 @@ import java.util.List;
  */
 public class ContentDto {
 
+     @Getter
+     @Setter
+     @Builder
+     @ToString
+     @AllArgsConstructor
+     @NoArgsConstructor
      public static class Post{
 
           private String title;
 
-          private ContentFormat contentFormat;
+          private String contentFormat;
 
           private String rawContent;
 
@@ -24,21 +36,22 @@ public class ContentDto {
 
           private String description;
 
-          private Boolean draft = true;
+          private Instant createdAt;
 
-          private ZonedDateTime publishAt;
+          private Instant publishAt;
 
           private List<String> ogKeywordList;
 
-          private Long categoryId;
+          private Category category;
+
+          private List<Tag> tagList;
+
+          private List<Category> categoryList;
 
           //ogTag image
-          private String ogImage;
+          String ogImage;
 
-          //og tag description
-          private String ogDescription;
-
-          private Boolean isPublished;
+          Boolean isPublished;
      }
 
      public static class Put{
@@ -55,9 +68,7 @@ public class ContentDto {
 
           private String description;
 
-          private Boolean draft = true;
-
-          private ZonedDateTime publishAt;
+          private Instant publishAt;
 
           private List<String> ogKeywordList;
 

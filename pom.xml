@@ -15,6 +15,7 @@
 	<properties>
 		<java.version>17</java.version>
 		<mapStruct.version>1.5.3.Final</mapStruct.version>
+		<org.projectlombok.version>1.18.24</org.projectlombok.version>
 	</properties>
 	<dependencies>
 		<dependency>
@@ -26,6 +27,8 @@
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-webflux</artifactId>
 		</dependency>
+
+
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-data-mongodb-reactive</artifactId>
@@ -57,6 +60,18 @@
 			<artifactId>de.flapdoodle.embed.mongo</artifactId>
 			<version>3.5.1</version>
 		</dependency>
+		<dependency>
+			<groupId>org.projectlombok</groupId>
+			<artifactId>lombok</artifactId>
+			<version>${org.projectlombok.version}</version>
+			<optional>true</optional>
+		</dependency>
+		<dependency>
+			<groupId>io.projectreactor.tools</groupId>
+			<artifactId>blockhound</artifactId>
+			<version>1.0.6.RELEASE</version>
+			<scope>provided</scope>
+		</dependency>
 	</dependencies>
 
 	<build>
@@ -73,6 +88,11 @@
 					<source>17</source>
 					<target>17</target>
 					<annotationProcessorPaths>
+						<path>
+							<groupId>org.projectlombok</groupId>
+							<artifactId>lombok</artifactId>
+							<version>${org.projectlombok.version}</version>
+						</path>
 						<path>
 							<groupId>org.mapstruct</groupId>
 							<artifactId>mapstruct-processor</artifactId>

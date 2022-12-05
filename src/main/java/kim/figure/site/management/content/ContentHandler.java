@@ -25,15 +25,21 @@ public class ContentHandler {
     ContentRepository contentRepository;
 
     @Autowired
+    ContentSequenceService contentSequenceService;
+
+    @Autowired
     ValidationUtil validationUtil;
     public Mono<ServerResponse> postContent(ServerRequest serverRequest) {
 
         return serverRequest.bodyToMono(ContentDto.Post.class)
                 .map(dto->{
                     validationUtil.validate(dto);
-                    return ContentMapper.INSTANCE.contentPostToEntity(dto);
+                    Content content = ContentMapper.INSTANCE.contentPostToEntity(dto);
+                    content.setId(contentSequenceService.getSeq(content.SEQUENCE_NAME));
+
+                    return content;
                 })
-                .flatMap(contentEntity -> contentRepository.save(contentEntity).flatMap(savedContentEntity -> ServerResponse.ok().contentType(MediaType.APPLICATION_JSON).body(savedContentEntity, Content.class)));
+                .flatMap(content -> ServerResponse.ok().contentType(MediaType.APPLICATION_JSON).body(contentRepository.save(content), Content.class));
     }
 
     public Mono<ServerResponse> getContent(ServerRequest serverRequest) {
