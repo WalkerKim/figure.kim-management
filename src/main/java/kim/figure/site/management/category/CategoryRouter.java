@@ -8,7 +8,6 @@ import org.springframework.web.reactive.function.server.RouterFunctions;
 import org.springframework.web.reactive.function.server.ServerResponse;
 
 import static org.springframework.web.reactive.function.server.RequestPredicates.*;
-import static org.springframework.web.reactive.function.server.RequestPredicates.accept;
 
 /**
  * author         : walker
@@ -23,9 +22,7 @@ public class CategoryRouter {
         return RouterFunctions
                 .   route(POST("/category").and(contentType(MediaType.APPLICATION_JSON)), categoryHandler::postCategory)
                 .andRoute(GET("/category").and(accept(MediaType.APPLICATION_JSON)), categoryHandler::getCategoryList)
-                .andRoute(GET("/category/{id}").and(accept(MediaType.APPLICATION_JSON)), categoryHandler::getContent)
-                .andRoute(PUT("/category/{id}").and(accept(MediaType.APPLICATION_JSON)), categoryHandler::putContent)
-                .andRoute(DELETE("/category/{id}").and(accept(MediaType.APPLICATION_JSON)), categoryHandler::deleteContent)
+                .andRoute(DELETE("/category/{id}").and(accept(MediaType.APPLICATION_JSON)), categoryHandler::deleteCategory)
                 ;
     }
 }

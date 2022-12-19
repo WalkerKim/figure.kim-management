@@ -14,14 +14,15 @@ public class ValidationUtil {
     @Autowired
     Validator validator;
 
-
-
-
     public <T> void validate(T target) throws AbstractBindException {
         BeanPropertyBindingResult errors = new BeanPropertyBindingResult(target, target.getClass().getSimpleName());
         validator.validate(target, errors);
         if (errors.hasErrors()) {
             throw new ParameterBindingException(errors);
         }
+    }
+    public <T> T validateWithIdentity(T target) throws AbstractBindException {
+        validate(target);
+        return target;
     }
 }

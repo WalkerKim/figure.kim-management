@@ -10,6 +10,10 @@ import reactor.core.publisher.Flux;
  * date           : 2022. 08. 28.
  * description    :
  */
-public interface ContentRepository extends ReactiveMongoRepository<Content, String> {
+public interface ContentRepository extends ReactiveMongoRepository<Content, Long> {
     Flux<Content> findBy(Pageable pageable);
+
+    Flux<Content> deleteByIsDraft(boolean b);
+
+    Flux<Content> deleteByIsDraftAndRawContent(boolean b, Object o);
 }

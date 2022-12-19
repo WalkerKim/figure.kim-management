@@ -13,28 +13,28 @@ export function getDataWithHost(url, autoAlertBool){
     console.log(url)
     return fetch(serverHost + url, {
         method: "GET",
-        credentials: "include",
         headers: {
             'Content-Type': 'application/json',
         }
-    }).then(res => autoAlertFunc(res, autoAlertBool));
+    }).then(i=>i.json()).then(res => autoAlertFunc(res, autoAlertBool));
 }
 
-function fetchWithMethod(method, url, bodyData){
+
+export function fetchWithMethod(method, url, bodyData){
     console.log(serverHost + url)
     return fetch(serverHost + url, {
         method: method,
         credentials: "include",
         headers: {
-            'Content-Type': 'application/json',
+            'Content-Type': 'application/json'
         }
         ,
         body: JSON.stringify(bodyData)
-    });
+    }).catch(e=>console.log(e.json()));
 }
 
 function autoAlertFunc(res, autoAlertBool){
-    console.log(res)
+    console.log(res, autoAlertBool)
     if(autoAlertBool){
         if(res.status>100&&res.status<300){
             alert('Request complete.');

@@ -4,11 +4,8 @@ import kim.figure.site.common.category.Category;
 import kim.figure.site.common.content.ContentFormat;
 import kim.figure.site.common.tag.Tag;
 import lombok.*;
-import org.springframework.data.annotation.CreatedDate;
-import org.springframework.data.mongodb.core.mapping.DBRef;
 
 import java.time.Instant;
-import java.time.ZonedDateTime;
 import java.util.List;
 
 /**
@@ -25,6 +22,8 @@ public class ContentDto {
      @AllArgsConstructor
      @NoArgsConstructor
      public static class Post{
+
+          private Long id;
 
           private String title;
 
@@ -54,9 +53,15 @@ public class ContentDto {
           Boolean isPublished;
      }
 
+
+     @Getter
+     @Setter
+     @ToString
+     @AllArgsConstructor
+     @NoArgsConstructor
      public static class Put{
 
-          private Long Id;
+          private Long id;
 
           private String title;
 
@@ -82,9 +87,18 @@ public class ContentDto {
 
           private Boolean isPublished;
 
-          public void setId(Long id) {
-               Id = id;
-          }
+          private List<Tag> tagList;
+
+//
+//          public Long getId() {
+//               return id;
+//          }
+//
+//          public void setId(Long id) {
+//               this.id = id;
+//          }
      }
 
+     public class Get {
+     }
 }

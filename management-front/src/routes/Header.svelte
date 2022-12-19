@@ -1,7 +1,6 @@
 <script>
     import {page} from '$app/stores';
     import logo from '$lib/images/Figure.kim-200.png';
-    import github from '$lib/images/github.svg';
 </script>
 
 <header>
@@ -17,21 +16,21 @@
                     <ul>
                         <li
                             class="-mr-1 sm:mr-5 sm:hover:text-gray-300 cursor-pointer my-0 sm:my-1 border-t-transparent py-5 sm:px-2 sm:w-auto w-1/2 sm:inline inline-block text-center
-                                    {$page.url.pathname === '/' ? 'sm:border-b-2 sm:border-green-400 text-white hover:text-green-300 sm:text-green-400 mb-0 bg-green-400 sm:bg-opacity-0 ':'bg-gray-800 sm:bg-opacity-0'}
+                                    {$page.url.pathname.startsWith('/post')  ? 'sm:border-b-2 sm:border-green-400 text-white hover:text-green-300 sm:text-green-400 mb-0 bg-green-400 sm:bg-opacity-0 ':'bg-gray-800 sm:bg-opacity-0'}
                             ">
-                            <a href="/">Home</a>
+                            <a href="/post">Post</a>
                         </li>
                         <li
                             class="-mr-1 sm:mr-5 sm:hover:text-gray-300 cursor-pointer my-0 sm:my-1 border-t-transparent py-5 sm:px-2 sm:w-auto w-1/2 sm:inline inline-block text-center
-                                    {$page.url.pathname === '/post' ? 'sm:border-b-2 sm:border-green-400 text-white hover:text-green-300 sm:text-green-400 mb-0 bg-green-400 sm:bg-opacity-0 ':'bg-gray-800 sm:bg-opacity-0'}
+                                    {$page.url.pathname.startsWith('/category')  ? 'sm:border-b-2 sm:border-green-400 text-white hover:text-green-300 sm:text-green-400 mb-0 bg-green-400 sm:bg-opacity-0 ':'bg-gray-800 sm:bg-opacity-0'}
                             ">
-                            <a href="/post">Posting</a>
+                            <a href="/category">Category</a>
                         </li>
                         <li
                             class="-mr-1 sm:mr-5 sm:hover:text-gray-300 cursor-pointer my-0 sm:my-1 border-t-transparent py-5 sm:px-2 sm:w-auto w-1/2 sm:inline inline-block text-center
-                                    {$page.url.pathname === '/post-list' ? 'sm:border-b-2 sm:border-green-400 text-white hover:text-green-300 sm:text-green-400 mb-0 bg-green-400 sm:bg-opacity-0 ':'bg-gray-800 sm:bg-opacity-0'}
+                                    {$page.url.pathname === '/tag' ? 'sm:border-b-2 sm:border-green-400 text-white hover:text-green-300 sm:text-green-400 mb-0 bg-green-400 sm:bg-opacity-0 ':'bg-gray-800 sm:bg-opacity-0'}
                             ">
-                            <a href="/post-list">Post List</a>
+                            <a href="/tag">Tag</a>
                         </li>
                     </ul>
                 </div>

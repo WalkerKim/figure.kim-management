@@ -1,7 +1,5 @@
 package kim.figure.site.management.category;
 
-import kim.figure.site.common.category.Category;
-import kim.figure.site.common.content.Content;
 import lombok.*;
 
 import java.util.List;
@@ -28,11 +26,7 @@ public class CategoryDto {
 
         private Integer depth;
 
-        private List<String> childCategoryIdList;
-
         private String parentCategoryId;
-
-        private List<String> contentIdList;
     }
 
     public class Put {
@@ -43,6 +37,7 @@ public class CategoryDto {
     @AllArgsConstructor
     @NoArgsConstructor
     @Getter
+    @Setter
     public static class Get{
         private String id;
 
@@ -55,7 +50,5 @@ public class CategoryDto {
         private List<CategoryDto.Get> childCategoryList;
 
         private String parentCategoryId;
-
-        private List<Content> contentList;
     }
 }

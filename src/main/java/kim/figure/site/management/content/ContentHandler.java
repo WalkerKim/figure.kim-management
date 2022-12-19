@@ -3,14 +3,16 @@ package kim.figure.site.management.content;
 import kim.figure.site.common.content.Content;
 import kim.figure.site.management.common.ValidationUtil;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Pageable;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Component;
+import org.springframework.util.MultiValueMap;
 import org.springframework.web.reactive.function.server.ServerRequest;
 import org.springframework.web.reactive.function.server.ServerResponse;
-import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
+import java.time.Instant;
+
+import static kim.figure.site.management.common.HttpUtils.okResponse;
 import static org.springframework.web.reactive.function.BodyInserters.fromPublisher;
 
 /**
@@ -24,46 +26,48 @@ public class ContentHandler {
     @Autowired
     ContentRepository contentRepository;
 
-    @Autowired
-    ContentSequenceService contentSequenceService;
 
     @Autowired
     ValidationUtil validationUtil;
+
+    @Autowired
+    ContentService contentService;
+
+    public Mono<ServerResponse> postTempContent(ServerRequest serverRequest) {
+        return okResponse(contentRepository.save(Content.builder().id(Instant.now().getEpochSecond()).isPublished(false).isDraft(true).build()), Content.class);
+    }
+
     public Mono<ServerResponse> postContent(ServerRequest serverRequest) {
-
-        return serverRequest.bodyToMono(ContentDto.Post.class)
-                .map(dto->{
-                    validationUtil.validate(dto);
-                    Content content = ContentMapper.INSTANCE.contentPostToEntity(dto);
-                    content.setId(contentSequenceService.getSeq(content.SEQUENCE_NAME));
-
-                    return content;
-                })
-                .flatMap(content -> ServerResponse.ok().contentType(MediaType.APPLICATION_JSON).body(contentRepository.save(content), Content.class));
+        Mono<ContentDto.Post> bodyToMono = serverRequest.bodyToMono(ContentDto.Post.class).log();
+        return okResponse(contentService.postContent(bodyToMono), Content.class);
     }
 
     public Mono<ServerResponse> getContent(ServerRequest serverRequest) {
-        return ServerResponse.ok().body(fromPublisher(contentRepository.findById(serverRequest.pathVariable("id")), Content.class));
+        return ServerResponse.ok().body(fromPublisher(contentRepository.findById(Long.parseLong(serverRequest.pathVariable("id"))), Content.class));
     }
 
     public Mono<ServerResponse> getContentList(ServerRequest serverRequest) {
-        Flux<Content> contentEntityFlux = serverRequest.bodyToMono(Pageable.class).flatMapMany(contentRepository::findBy);
-        return ServerResponse.ok().contentType(MediaType.APPLICATION_JSON).body(contentEntityFlux, Content.class);
+        MultiValueMap<String, String> params = serverRequest.queryParams();
+        return okResponse(contentService.getContentList(params), Content.class);
+    }
+    public Mono<ServerResponse> getContentCount(ServerRequest serverRequest) {
+        return ServerResponse.ok().body(contentService.getContentCount(), Long.class);
     }
 
+
+
     public Mono<ServerResponse> putContent(ServerRequest serverRequest) {
-        return serverRequest.bodyToMono(ContentDto.Put.class)
-                .map(dto->{
-                    validationUtil.validate(dto);
-                    dto.setId(Long.parseLong(serverRequest.pathVariable("id")));
-                    Content postEntity = ContentMapper.INSTANCE.contentPutToEntity(dto);
-                    return postEntity;
-                })
-                .flatMap(contentEntity->ServerResponse.ok().contentType(MediaType.APPLICATION_JSON).body(contentRepository.save(contentEntity), Content.class));
+        return ServerResponse.ok().contentType(MediaType.APPLICATION_JSON)
+                .body(contentService.putContent(serverRequest.bodyToMono(ContentDto.Put.class)
+                        , Long.parseLong(serverRequest.pathVariable("id"))), Content.class);
     }
 
     public Mono<ServerResponse> deleteContent(ServerRequest serverRequest) {
-        String id = serverRequest.pathVariable("id");
-        return contentRepository.deleteById(id).then(ServerResponse.ok().build());
+        return contentRepository.deleteById(Long.parseLong(serverRequest.pathVariable("id"))).then(ServerResponse.ok().build());
     }
+
+    public Mono<ServerResponse> deleteUneditedContent(ServerRequest serverRequest) {
+        return okResponse(contentRepository.deleteByIsDraftAndRawContent(true, ""), Content.class);
+    }
+
 }

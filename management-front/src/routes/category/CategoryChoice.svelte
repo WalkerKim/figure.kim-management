@@ -1,46 +1,49 @@
 <script>
     import {afterUpdate, onMount, tick} from "svelte";
     import {getDataWithHost} from "$lib/common.js";
+
     export let selectedCategoryIdSet;
-
-
+    export let isActiveAutoSelectParent
     let categoryArray =[];
     onMount(async () => {
-        const res = await getDataWithHost("/category");
-        categoryArray = await res.json();
+        categoryArray = await getDataWithHost("/category");
+
         await tick();
         selectedCategoryIdSet.forEach(categoryId => {
             document.getElementById('category-'+categoryId).checked = true
         });
     });
     afterUpdate(()=>{
-        console.log("afterUpdate"+selectedCategoryIdSet)
-
+        // console.log("afterUpdate"+selectedCategoryIdSet)
     });
 
     function handleParentCheck() {
         if(this.checked){
             document.getElementById('category-' + this.dataset.parentId).checked = true;
             selectedCategoryIdSet.add(this.dataset.categoryId)
-            selectedCategoryIdSet.add(this.dataset.parentId)
-
+                if(isActiveAutoSelectParent){
+                    selectedCategoryIdSet.add(this.dataset.parentId)
+                }
         }else{
-            let isCheckedChildExists =Array.from(document.getElementsByClassName(this.dataset.parentId)).filter(dom=>dom.checked).length!=0
-            if(!isCheckedChildExists){
-                document.getElementById('category-' + this.dataset.parentId).checked = false;
-                selectedCategoryIdSet.delete(this.dataset.parentId);
+            if(isActiveAutoSelectParent){
+                let isCheckedChildExists =Array.from(document.getElementsByClassName(this.dataset.parentId)).filter(dom=>dom.checked).length!=0
+                if(!isCheckedChildExists){
+                    document.getElementById('category-' + this.dataset.parentId).checked = false;
+                    selectedCategoryIdSet.delete(this.dataset.parentId);
+                }
             }
             selectedCategoryIdSet.delete(this.dataset.categoryId)
         }
 
     }
     function handleChildCheck(){
-        let isCheckedChildExists =Array.from(document.getElementsByClassName(this.dataset.categoryId)).filter(dom=>dom.checked).length!=0
-        if(!isCheckedChildExists){
-            this.checked = false;
-
-        }else{
-            this.checked = true;
+        if(isActiveAutoSelectParent){
+            let isCheckedChildExists =Array.from(document.getElementsByClassName(this.dataset.categoryId)).filter(dom=>dom.checked).length!=0
+            if(!isCheckedChildExists){
+                this.checked = false;
+            }else{
+                this.checked = true;
+            }
         }
         if(this.checked){
             selectedCategoryIdSet.add(this.dataset.categoryId)
@@ -53,7 +56,7 @@
     <div class="container grid grid-cols-12">
 
         <div class="col-span-12">
-            <h2 class="text-2xl">카테고리 선택</h2>
+            <h2 class="text-2xl">Categories</h2>
         </div>
         <div class="grid grid-cols-6 col-span-12">
             {#each categoryArray as parentCategory}
@@ -64,7 +67,7 @@
                                data-category-id="{parentCategory.id}"
                                on:change={handleChildCheck}
                         >
-                        <label for="{'category-'+parentCategory.id}" class="w-full">{parentCategory.name}</label>
+                        <label for="{'category-'+parentCategory.id}" class="w-full">{parentCategory.name} ({parentCategory.id})</label>
                     </div>
                     {#each parentCategory["childCategoryList"] as childCategory}
                         <div class="w-full pl-2">
@@ -73,7 +76,7 @@
                                    data-category-id="{childCategory.id}"
                                    data-parent-id="{parentCategory.id}"
                                    class="{parentCategory.id}" on:change={handleParentCheck}>
-                            <label for="{'category-'+childCategory.id}" class="pl-1">{childCategory.name}</label>
+                            <label for="{'category-'+childCategory.id}" class="pl-1">{childCategory.name} ({childCategory.id})</label>
                         </div>
                     {/each}
                 </div>
