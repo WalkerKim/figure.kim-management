@@ -35,5 +35,5 @@
         <CategoryChoice bind:selectedCategoryIdSet={selectedCategoryIdSet} isActiveAutoSelectParent={true}/>
     </div>
     <ContentProps bind:content={content}></ContentProps>
-    <Editor height="80vh" lass="" options={hooks} bind:this={editor}/>
+    <Editor initialValue={content.rawContent} height="80vh" lass="" options={hooks} bind:this={editor}/>
 </template>

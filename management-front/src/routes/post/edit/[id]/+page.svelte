@@ -5,7 +5,7 @@
     import {goto} from "$app/navigation";
 
     export let data;
-	let editor, id;
+	let editor;
 
 	function submit() {
 		data.rawContent = editor.invoke("getMarkdown");
@@ -16,7 +16,9 @@
 				res.json().then(content => goto("/post/edit/"+content.id))
 			});;
 		}else{
-			putDataWithHost("/content/"+data.id, data, true);
+			putDataWithHost("/content/"+data.id, data, true).then(res=>{
+				location.reload()
+			})
 		}
 	}
 	function tempSubmit() {
@@ -25,6 +27,7 @@
 		data.contentFormat = "MARKDOWN"
 		putDataWithHost("temp-content", data);
 	}
+
 </script>
 
 <svelte:head>

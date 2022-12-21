@@ -7,6 +7,7 @@ import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 import reactor.util.function.Tuples;
 
+import java.util.ArrayList;
 import java.util.Optional;
 
 /**
@@ -66,7 +67,11 @@ public class CategoryService {
                             return categoryRepository.findById(tuple2.getT2().get()).flatMap(parentCategory -> {
                                 tuple2.getT1().setParentCategory(parentCategory);
                                 return categoryRepository.save(tuple2.getT1()).flatMap(childCategory -> {
-                                    parentCategory.getChildCategory().add(childCategory);
+                                    var childCategoryList = parentCategory.getChildCategoryList();
+                                    if (childCategoryList == null) {
+                                        childCategoryList = new ArrayList<>();
+                                    }
+                                    childCategoryList.add(childCategory);
                                     return categoryRepository.save(parentCategory);
                                 });
                             });

@@ -55,11 +55,4 @@ public class WebfluxConfiguration implements WebFluxConfigurer {
         return new CorsWebFilter(source);
     }
 
-    @Override
-    public void addResourceHandlers(ResourceHandlerRegistry registry) {
-        registry.addResourceHandler("/assets/**")
-                .addResourceLocations("/Users/walker/IdeaProjects/figure.kim/main/src/main/resources/static/assets")
-                .setCacheControl(CacheControl.maxAge(365, TimeUnit.DAYS));
-    }
-
 }

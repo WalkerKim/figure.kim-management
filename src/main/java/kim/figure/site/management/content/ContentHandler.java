@@ -34,7 +34,7 @@ public class ContentHandler {
     ContentService contentService;
 
     public Mono<ServerResponse> postTempContent(ServerRequest serverRequest) {
-        return okResponse(contentRepository.save(Content.builder().id(Instant.now().getEpochSecond()).isPublished(false).isDraft(true).build()), Content.class);
+        return okResponse(contentRepository.save(Content.builder().id(Instant.now().getEpochSecond()).lastModifiedAt(Instant.now()).createdAt(Instant.now()).isPublished(false).isDraft(true).build()), Content.class);
     }
 
     public Mono<ServerResponse> postContent(ServerRequest serverRequest) {

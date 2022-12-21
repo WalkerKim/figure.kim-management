@@ -101,4 +101,13 @@ public class ContentDto {
 
      public class Get {
      }
+
+     @Getter
+     @AllArgsConstructor
+     @NoArgsConstructor
+     @Builder
+     public static class TagRef{
+          Long id;
+          String title;
+     }
 }

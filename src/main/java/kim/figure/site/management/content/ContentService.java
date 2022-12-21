@@ -46,9 +46,6 @@ public class ContentService {
     String projectStaticPath;
 
     public Mono<Content> putContent(Mono<ContentDto.Put> monoDto, Long id) {
-        System.out.println(id);
-        System.out.println(id);
-        System.out.println(id);
         return monoDto
                 .map(dto -> {
                     System.out.println(dto);
@@ -95,6 +92,7 @@ public class ContentService {
                     Content newContent = tuple2.getT1();
                     newContent.setCreatedAt(tuple2.getT1().getCreatedAt());
                     newContent.setIsDraft(false);
+                    newContent.setLastModifiedAt(Instant.now());
                     if (newContent.getIsPublished()) {
                         newContent.setPublishAt(Instant.now());
                     }
