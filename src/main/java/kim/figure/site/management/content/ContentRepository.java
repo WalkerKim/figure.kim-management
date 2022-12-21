@@ -1,5 +1,6 @@
 package kim.figure.site.management.content;
 
+import kim.figure.site.common.category.Category;
 import kim.figure.site.common.content.Content;
 import kim.figure.site.common.tag.Tag;
 import org.reactivestreams.Subscriber;
@@ -23,4 +24,6 @@ public interface ContentRepository extends ReactiveMongoRepository<Content, Long
     Flux<Content> findByTagList(Tag tag);
 
     Mono<Long> countByTagList(Tag tag);
+
+    Flux<Content> findByCategoryList(Category c);
 }

@@ -69,7 +69,7 @@
                         >
                         <label for="{'category-'+parentCategory.id}" class="w-full">{parentCategory.name} ({parentCategory.id})</label>
                     </div>
-                    {#each parentCategory["childCategoryList"] as childCategory}
+                    {#each parentCategory["childCategoryList"]?parentCategory["childCategoryList"]:[] as childCategory}
                         <div class="w-full pl-2">
                             <input type="checkbox" value="{childCategory.id}" name="category"
                                    id="{'category-'+childCategory.id}"

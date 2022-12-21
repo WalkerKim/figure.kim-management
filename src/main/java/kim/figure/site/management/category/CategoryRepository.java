@@ -12,7 +12,7 @@ import reactor.core.publisher.Mono;
  */
 public interface CategoryRepository extends ReactiveMongoRepository<Category, String> {
 
-    Flux<Category> findByParentCategory(Mono<Category> parentCategory);
+//    Flux<Category> findByParentCategory(Mono<Category> parentCategory);
 
     Flux<Category> findByDepth(int i);
 }
