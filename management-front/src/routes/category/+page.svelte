@@ -5,17 +5,17 @@
     let selectedCategoryIdSet = new Set();
     function deleteSelectedCategory(){
         selectedCategoryIdSet.forEach(id=>{
-            deleteDataWithHost("/category/"+id, null, true);
+            deleteDataWithHost("/category/"+id, null, true).then(i=>location.reload());
         })
     }
 
     function submitParentCategory(){
         console.log(parentCategory)
-        postDataWithHost("/category", parentCategory, true)
+        postDataWithHost("/category", parentCategory, true).then(i=>location.reload());
 
     }
     function submitChildCategory(){
-        postDataWithHost("/category", childCategory, true)
+        postDataWithHost("/category", childCategory, true).then(i=>location.reload());
 
     }
 

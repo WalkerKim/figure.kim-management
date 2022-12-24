@@ -9,7 +9,7 @@
     export let editor;
     let selectedCategoryIdSet = new Set();
     $:content["categoryList"] = [... selectedCategoryIdSet];
-    let hooks = {
+    let options = {
         hooks: {
             addImageBlobHook: (blob, callback) => {
                 // blob : Java Script 파일 객체
@@ -27,13 +27,28 @@
                     callback("test", "test");
                 })
             }
+        },
+        customHTMLRenderer : {
+            heading(node, context) {
+                return {
+                    type: context.entering ? 'openTag' : 'closeTag',
+                    tagName: `h${node.level}`,
+                    id: [`heading-'${node.level}`],
+                    attributes:{
+                        id:node.firstChild.literal
+                    }
+                }
+            },
         }
+
     }
+
+
 </script>
 <template>
-    <div class="mb-5">
+    <div class="mb-5" on:click={()=>    console.log(editor)}>
         <CategoryChoice bind:selectedCategoryIdSet={selectedCategoryIdSet} isActiveAutoSelectParent={true}/>
     </div>
     <ContentProps bind:content={content}></ContentProps>
-    <Editor initialValue={content.rawContent} height="80vh" lass="" options={hooks} bind:this={editor}/>
+    <Editor initialValue={content.rawContent} height="80vh" lass="" options={options} bind:this={editor}/>
 </template>
