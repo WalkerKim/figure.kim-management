@@ -14,7 +14,7 @@
 		if(data.isDraft){
 			postDataWithHost("/content", data, true).then(res=>{
 				res.json().then(content => goto("/post/edit/"+content.id))
-			});;
+			});
 		}else{
 			putDataWithHost("/content/"+data.id, data, true).then(res=>{
 				location.reload()

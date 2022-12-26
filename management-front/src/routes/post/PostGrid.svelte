@@ -25,18 +25,18 @@
                 {id: "isPublished", name: "isPublished", formatter: cell => cell ? "true" : "false"},
                 {
                     id: "tagList", name: "tagList", formatter: (cell, row) => {
-                        // console.log()
                         return Array.isArray(cell) ? cell.map(i => i.id).join(",") : cell;
                     }
                 },
                 {
                     id: "categoryList", name: "Category", formatter: (cell, row) => {
-                        return cell;
+                        return Array.isArray(cell) ? cell.map(i => i.id).join(",") : cell;
                     }
                 },
                 {id: "lastModifiedAt", name: "lastModifiedAt", formatter: cell => new Date(cell).toLocaleString()},
                 {
                     id: "id", name: "action", formatter: (cell, row) => {
+                        console.log(cell)
                         return h('div', {className: 'inline-flex w-full', id: 'foo'},
                             h('button', {
                                 className: "inline-flex mr-3 bg-green-900 hover:bg-green-700 border-green-400 text-green-400 px-2 py-1 rounded w-auto whitespace-nowrap",
@@ -63,7 +63,7 @@
             ],
             pagination: {
                 enable: true,
-                limit: 10,
+                limit: 5,
                 server: {
                     url: (prev, page, limit) => {
                         return `${prev}?limit=${limit}&offset=${page}`
@@ -99,11 +99,6 @@
     }
 
     let gridSettings = getSettings();
-    console.log(gridSettings)
-    console.log(gridSettings)
-    console.log(gridSettings)
-    console.log(gridSettings)
-    console.log(gridSettings)
 </script>
 <template>
     <Grid bind:instance={gridInstance} {...gridSettings}></Grid>

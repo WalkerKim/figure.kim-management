@@ -1,6 +1,6 @@
 <script>
     import Grid from "gridjs-svelte"
-    import {deleteDataWithHost, fetchWithMethod, serverHost} from "$lib/common.js";
+    import {fetchWithMethod} from "$lib/common.js";
     import {h} from "gridjs";
     import "$lib/grid.css";
     import {goto} from "$app/navigation";

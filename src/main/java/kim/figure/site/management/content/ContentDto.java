@@ -1,6 +1,5 @@
 package kim.figure.site.management.content;
 
-import kim.figure.site.common.category.Category;
 import kim.figure.site.common.content.ContentFormat;
 import kim.figure.site.common.tag.Tag;
 import lombok.*;
@@ -41,11 +40,9 @@ public class ContentDto {
 
           private List<String> ogKeywordList;
 
-          private Category category;
-
           private List<Tag> tagList;
 
-          private List<Category> categoryList;
+          private List<String> categoryIdList;
 
           //ogTag image
           String ogImage;
@@ -89,6 +86,8 @@ public class ContentDto {
 
           private List<Tag> tagList;
 
+          private List<String> categoryIdList;
+
 //
 //          public Long getId() {
 //               return id;
@@ -99,7 +98,41 @@ public class ContentDto {
 //          }
      }
 
-     public class Get {
+     @Getter
+     @Setter
+     @NoArgsConstructor
+     public static class TempGet {
+          private Long id;
+
+          private String title;
+
+          private ContentFormat contentFormat;
+
+          private String rawContent;
+
+          private String renderedContent;
+
+          private String description;
+
+          private Instant createdAt;
+
+          private Boolean isDraft;
+
+          private Instant lastModifiedAt;
+
+          private Instant publishAt;
+
+          private List<String> ogKeywordList;
+
+          private List<Tag> tagList;
+
+          private List<String> categoryIdList;
+
+          //ogTag image
+          String ogImage;
+
+          Boolean isPublished;
+
      }
 
      @Getter

@@ -1,7 +1,8 @@
 <script>
-	import '@toast-ui/editor/dist/toastui-editor-viewer.css';
-	import PostGrid from "../../post/PostGrid.svelte";
-	/** @type {import('./$types').PageData} */
+    import '@toast-ui/editor/dist/toastui-editor-viewer.css';
+    import PostGrid from "../../post/PostGrid.svelte";
+
+    /** @type {import('./$types').PageData} */
 	export let data;
 	console.log(data)
 	console.log(data)

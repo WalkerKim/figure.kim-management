@@ -1,7 +1,6 @@
 package kim.figure.site.management.tag;
 
 import kim.figure.site.common.content.Content;
-import kim.figure.site.common.tag.Tag;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.util.MultiValueMap;

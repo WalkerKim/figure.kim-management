@@ -11,4 +11,5 @@ public interface ContentMapper {
     Content contentPostToEntity(ContentDto.Post postContent);
     Content contentPutToEntity(ContentDto.Put postContent);
 
+    ContentDto.TempGet contentEntityToGet(Content content);
 }

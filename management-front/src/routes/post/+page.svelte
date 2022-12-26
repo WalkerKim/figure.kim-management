@@ -1,6 +1,7 @@
 <script>
     import DeleteAllEmptyDraftButton from "./DeleteAllEmptyDraftButton.svelte";
     import PostGrid from "./PostGrid.svelte";
+
     let contentUrl = "/content"
 </script>
 <template>

@@ -3,6 +3,10 @@ import {getDataWithHost} from "$lib/common.js";
 
 /** @type {import('./$types').PageLoad} */
 export async function load({ params }) {
-    return await getDataWithHost("/content/"+params.id);
+    let result = await getDataWithHost("/content/" + params.id);
+    console.log(result.categoryIdList)
+    result.categoryList = result.categoryList ?? [];
+    result.categoryIdList = result.categoryList.map(category=>category.id);
+    return result;
     throw error(404, 'Not found');
 }

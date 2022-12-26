@@ -10,8 +10,6 @@ import org.springframework.web.reactive.function.server.ServerRequest;
 import org.springframework.web.reactive.function.server.ServerResponse;
 import reactor.core.publisher.Mono;
 
-import java.time.Instant;
-
 import static kim.figure.site.management.common.HttpUtils.okResponse;
 import static org.springframework.web.reactive.function.BodyInserters.fromPublisher;
 
@@ -34,7 +32,7 @@ public class ContentHandler {
     ContentService contentService;
 
     public Mono<ServerResponse> postTempContent(ServerRequest serverRequest) {
-        return okResponse(contentRepository.save(Content.builder().id(Instant.now().getEpochSecond()).lastModifiedAt(Instant.now()).createdAt(Instant.now()).isPublished(false).isDraft(true).build()), Content.class);
+        return okResponse(contentService.postTempContent(), ContentDto.TempGet.class);
     }
 
     public Mono<ServerResponse> postContent(ServerRequest serverRequest) {
@@ -67,7 +65,7 @@ public class ContentHandler {
     }
 
     public Mono<ServerResponse> deleteUneditedContent(ServerRequest serverRequest) {
-        return okResponse(contentRepository.deleteByIsDraftAndRawContent(true, ""), Content.class);
+        return okResponse(contentRepository.deleteByIsDraftAndRawContent(true, null), Content.class);
     }
 
 }

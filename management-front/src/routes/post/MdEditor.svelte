@@ -5,10 +5,8 @@
     import Editor from 'tui-editor-svelte/Editor.svelte';
     import '@toast-ui/editor/dist/toastui-editor-viewer.css';
 
-    export let content = new Object();
+    export let content;
     export let editor;
-    let selectedCategoryIdSet = new Set();
-    $:content["categoryList"] = [... selectedCategoryIdSet];
     let options = {
         hooks: {
             addImageBlobHook: (blob, callback) => {
@@ -33,12 +31,22 @@
                 return {
                     type: context.entering ? 'openTag' : 'closeTag',
                     tagName: `h${node.level}`,
-                    id: [`heading-'${node.level}`],
                     attributes:{
-                        id:node.firstChild.literal
+                        id: context.getChildrenText(node).trim().replace(/\s+/g, '-')
                     }
                 }
             },
+            codeBlock(node, context) {
+                console.log("codeBlock",node, context)
+                return [
+                    { type: 'openTag', tagName: 'pre', classNames: [`language-${node.info}`,'line-numbers'] },
+                    { type: 'openTag', tagName: 'code', classNames: [`language-${node.info}`] },
+                    { type: 'text', content: node.literal },
+                    { type: 'closeTag', tagName: 'code' },
+                    { type: 'closeTag', tagName: 'pre' }
+                ];
+            },
+
         }
 
     }
@@ -47,7 +55,7 @@
 </script>
 <template>
     <div class="mb-5" on:click={()=>    console.log(editor)}>
-        <CategoryChoice bind:selectedCategoryIdSet={selectedCategoryIdSet} isActiveAutoSelectParent={true}/>
+        <CategoryChoice bind:selectedCategoryIdArray={content.categoryIdList} isActiveAutoSelectParent={true}/>
     </div>
     <ContentProps bind:content={content}></ContentProps>
     <Editor initialValue={content.rawContent} height="80vh" lass="" options={options} bind:this={editor}/>

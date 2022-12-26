@@ -1,8 +1,5 @@
 <script>
     export let content;
-    console.log(content)
-    console.log(Array.isArray(content.tagList))
-    // console.log(content.tagList.map(i=>i.id).join(",") : "";)
     let tagListString = Array.isArray(content.tagList) ? content.tagList.map(i=>i.id).join(",") : "";
     let ogKeywordListString = Array.isArray(content.ogKeywordList) ? content.ogKeywordList.join(",") : "";
     $: content.tagList = stringToArray(tagListString);

@@ -4,15 +4,19 @@
     import {onMount} from "svelte";
     import {goto} from "$app/navigation";
 
-    let editor, content, id;
+    let editor, id;
+    let content = {};
 
     function submit() {
         content.rawContent = editor.invoke("getMarkdown");
         content.renderedContent = editor.invoke("getHtml");
         content.contentFormat = "MARKDOWN"
+        content.tagList = content.tagList ?? [];
+        content.ogKeywordList = content.ogKeywordList ?? [];
+        console.log(content);
+        // return
         postDataWithHost("/content", content, true).then(res=>{
             res.json().then(content => goto("/post/edit/"+content.id))
-
         });
     }
     function tempSubmit() {

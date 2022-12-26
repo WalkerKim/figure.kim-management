@@ -2,16 +2,20 @@
     import {afterUpdate, onMount, tick} from "svelte";
     import {getDataWithHost} from "$lib/common.js";
 
-    export let selectedCategoryIdSet;
+    export let selectedCategoryIdArray;
     export let isActiveAutoSelectParent
     let categoryArray =[];
     onMount(async () => {
-        categoryArray = await getDataWithHost("/category");
+        let categoryResult = await getDataWithHost("/category");
 
         await tick();
-        selectedCategoryIdSet.forEach(categoryId => {
-            document.getElementById('category-'+categoryId).checked = true
-        });
+        console.log(categoryResult)
+        categoryArray = categoryResult;
+        console.log(categoryArray)
+        // selectedCategoryIdArray = selectedCategoryIdArray ?? [];
+        // selectedCategoryIdArray.forEach(categoryId => {
+        //     document.getElementById('category-'+categoryId).checked = true
+        // });
     });
     afterUpdate(()=>{
         // console.log("afterUpdate"+selectedCategoryIdSet)
@@ -20,21 +24,15 @@
     function handleParentCheck() {
         if(this.checked){
             document.getElementById('category-' + this.dataset.parentId).checked = true;
-            selectedCategoryIdSet.add(this.dataset.categoryId)
-                if(isActiveAutoSelectParent){
-                    selectedCategoryIdSet.add(this.dataset.parentId)
-                }
         }else{
             if(isActiveAutoSelectParent){
                 let isCheckedChildExists =Array.from(document.getElementsByClassName(this.dataset.parentId)).filter(dom=>dom.checked).length!=0
                 if(!isCheckedChildExists){
                     document.getElementById('category-' + this.dataset.parentId).checked = false;
-                    selectedCategoryIdSet.delete(this.dataset.parentId);
+
                 }
             }
-            selectedCategoryIdSet.delete(this.dataset.categoryId)
         }
-
     }
     function handleChildCheck(){
         if(isActiveAutoSelectParent){
@@ -45,11 +43,7 @@
                 this.checked = true;
             }
         }
-        if(this.checked){
-            selectedCategoryIdSet.add(this.dataset.categoryId)
-        }else{
-            selectedCategoryIdSet.delete(this.dataset.categoryId)
-        }
+
     }
 </script>
 <template>
@@ -66,6 +60,7 @@
                                id="{'category-'+parentCategory.id}"
                                data-category-id="{parentCategory.id}"
                                on:change={handleChildCheck}
+                               bind:group={selectedCategoryIdArray}
                         >
                         <label for="{'category-'+parentCategory.id}" class="w-full">{parentCategory.name} ({parentCategory.id})</label>
                     </div>
@@ -75,7 +70,10 @@
                                    id="{'category-'+childCategory.id}"
                                    data-category-id="{childCategory.id}"
                                    data-parent-id="{parentCategory.id}"
-                                   class="{parentCategory.id}" on:change={handleParentCheck}>
+                                   class="{parentCategory.id}"
+                                   on:change={handleParentCheck}
+                                   bind:group={selectedCategoryIdArray}
+                            >
                             <label for="{'category-'+childCategory.id}" class="pl-1">{childCategory.name} ({childCategory.id})</label>
                         </div>
                     {/each}
