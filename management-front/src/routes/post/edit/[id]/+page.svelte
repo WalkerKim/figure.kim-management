@@ -38,7 +38,7 @@
 <template>
 	<h1 class="text-3xl">콘텐츠 수정</h1>
 	<MdEditor bind:editor bind:content={data}></MdEditor>
-	<div class="p-2 w-full">
+	<div class="mb-40 p-2 w-full">
 		<div class="flex">
 			{#if data.isDraft}
 				<button id="temp-store" name="temp-store" on:click={tempSubmit}

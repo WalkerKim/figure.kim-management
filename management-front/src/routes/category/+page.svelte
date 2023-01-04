@@ -2,9 +2,9 @@
     import CategoryChoice from "./CategoryChoice.svelte";
     import {deleteDataWithHost, postDataWithHost} from "$lib/common.js";
 
-    let selectedCategoryIdSet = new Set();
+    let selectedCategoryIdArray = new Array();
     function deleteSelectedCategory(){
-        selectedCategoryIdSet.forEach(id=>{
+        selectedCategoryIdArray.forEach(id=>{
             deleteDataWithHost("/category/"+id, null, true).then(i=>location.reload());
         })
     }
@@ -27,7 +27,7 @@
 
 <template>
     <button on:click={deleteSelectedCategory} class="hidden sm:inline-flex bg-red-500 hover:bg-red-600 border-red-500 text-white px-2  py-1 rounded w-auto whitespace-nowrap">delete selected category</button>
-    <CategoryChoice bind:selectedCategoryIdSet/>
+    <CategoryChoice bind:selectedCategoryIdArray/>
     <div class="container my-3">
         <h2 class="text-2xl">Add Parent Category</h2>
 

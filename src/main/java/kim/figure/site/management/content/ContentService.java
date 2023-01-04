@@ -5,6 +5,7 @@ import kim.figure.site.common.tag.Tag;
 import kim.figure.site.management.category.CategoryRepository;
 import kim.figure.site.management.common.ValidationUtil;
 import kim.figure.site.management.tag.TagRepository;
+import org.jsoup.Jsoup;
 import org.reactivestreams.Publisher;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -22,6 +23,8 @@ import java.nio.file.Path;
 import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
+
+import static kim.figure.site.management.common.JsoupUtils.extractDescriptionFromHtml;
 
 /**
  * author         : walker
@@ -51,9 +54,18 @@ public class ContentService {
 
     public Mono<Content> putContent(Mono<ContentDto.Put> monoDto, Long id) {
         return monoDto.map(validationUtil::validateWithIdentity)
+                .map(content->{
+                    if(content.getDescription()==null || content.getDescription().trim().equals("")){
+
+                        content.setDescription(
+                                extractDescriptionFromHtml(content.getRenderedContent())
+                        );
+
+                    }
+                    return content;
+                })
                 .flatMap(dto-> {
                     dto.setId(id);
-                    saveTag(dto.getTagList());
                     return Mono.zip(Mono.just(ContentMapper.INSTANCE.contentPutToEntity(dto)), categoryRepository.findAllById(dto.getCategoryIdList()).collectList());
                 })
                 .map(tuple2 -> {
@@ -86,6 +98,11 @@ public class ContentService {
                     Content content = ContentMapper.INSTANCE.contentPostToEntity(dto);
                     content.setRawContent(content.getRawContent().replaceAll("/assets/image/"+dto.getId(),"/assets/image/"+newId));
                     content.setRenderedContent(content.getRenderedContent().replaceAll("/assets/image/"+dto.getId(),"/assets/image/"+newId));
+                    if(content.getDescription()==null || content.getDescription().trim().equals("")){
+                        content.setDescription(
+                                extractDescriptionFromHtml(content.getRenderedContent())
+                        );
+                    }
                     saveTag(dto.getTagList());
                     content.setId(newId);
                     return Mono.zip(Mono.just(content), Mono.just(dto.getId()), categoryRepository.findAllById(dto.getCategoryIdList()).collectList());
