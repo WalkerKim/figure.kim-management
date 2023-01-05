@@ -5,7 +5,6 @@ import kim.figure.site.common.tag.Tag;
 import kim.figure.site.management.category.CategoryRepository;
 import kim.figure.site.management.common.ValidationUtil;
 import kim.figure.site.management.tag.TagRepository;
-import org.jsoup.Jsoup;
 import org.reactivestreams.Publisher;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -114,7 +113,7 @@ public class ContentService {
                     newContent.setLastModifiedAt(Instant.now());
                     newContent.setCategoryList(tuple3.getT3());
                     if (newContent.getIsPublished()) {
-                        newContent.setPublishAt(Instant.now());
+                        newContent.setPublishedAt(Instant.now());
                     }
                     if (tuple3.getT1().getTagList() != null) {
                         tagRepository.saveAll(tuple3.getT1().getTagList().stream().map(tag->{

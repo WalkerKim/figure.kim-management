@@ -36,7 +36,7 @@ public class ContentDto {
 
           private Instant createdAt;
 
-          private Instant publishAt;
+          private Instant publishedAt;
 
           private List<String> ogKeywordList;
 
@@ -70,7 +70,7 @@ public class ContentDto {
 
           private String description;
 
-          private Instant publishAt;
+          private Instant publishedAt;
 
           private List<String> ogKeywordList;
 
@@ -120,7 +120,7 @@ public class ContentDto {
 
           private Instant lastModifiedAt;
 
-          private Instant publishAt;
+          private Instant publishedAt;
 
           private List<String> ogKeywordList;
 
