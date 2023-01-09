@@ -14,7 +14,12 @@ public class JsoupUtils {
         return extractDescriptionFromHtml(html, defaultSubstringLength);
     }
     public static String extractDescriptionFromHtml(String html, int subStringLength){
-        return Jsoup.parse(html).text().substring(0, subStringLength);
+        String pureString = Jsoup.parse(html).text();
+        if(pureString.length()<180){
+            return pureString;
+        }else{
+            return pureString.substring(0, subStringLength);
+        }
     }
 
 }
