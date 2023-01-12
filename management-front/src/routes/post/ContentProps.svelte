@@ -27,6 +27,17 @@
         <hr>
         <div class="col-span-1 py-1 my-2 flex">
             <div class="w-36 justify-between flex">
+                <label for="isPublished" class=""> recommendStat</label>
+                <label for="isPublished" class="px-3"> : </label>
+            </div>
+            <div class="w-full">
+                <input type="number" name="recommendStat" id="recommendStat" bind:value={content.recommendStat}
+                       class="col-span-1 border-black border w-full shadow appearance-none border rounded py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline">
+            </div>
+        </div>
+        <hr>
+        <div class="col-span-1 py-1 my-2 flex">
+            <div class="w-36 justify-between flex">
                 <label for="title" class="self-center"> title</label>
                 <label for="title" class="self-center px-3"> : </label>
             </div>

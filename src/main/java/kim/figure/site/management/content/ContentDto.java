@@ -44,6 +44,8 @@ public class ContentDto {
 
           private List<String> categoryIdList;
 
+          private Long recommendStat;
+
           //ogTag image
           String ogImage;
 
@@ -87,6 +89,8 @@ public class ContentDto {
           private List<Tag> tagList;
 
           private List<String> categoryIdList;
+
+          private Long recommendStat;
 
 //
 //          public Long getId() {
