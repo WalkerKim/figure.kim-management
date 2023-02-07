@@ -12,7 +12,7 @@
         console.log(categoryResult)
         categoryArray = categoryResult;
         console.log(categoryArray)
-        // selectedCategoryIdArray = selectedCategoryIdArray ?? [];
+        selectedCategoryIdArray = selectedCategoryIdArray ?? [];
         // selectedCategoryIdArray.forEach(categoryId => {
         //     document.getElementById('category-'+categoryId).checked = true
         // });
