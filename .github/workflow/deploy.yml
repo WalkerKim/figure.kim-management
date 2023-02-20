@@ -1,0 +1,30 @@
+name: deploy
+
+on:
+  push:
+    branches:
+      - production
+
+jobs:
+  build:
+    runs-on: deploy
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3.3.0
+
+      - name: Setup Java
+        uses: actions/setup-java@v3.10.0
+        with:
+          java-version: 17
+          distribution:  'adopt'
+      - name: Setup Maven
+        uses: stCarolas/setup-maven@v.4.5
+        with:
+          maven-version: 3.8.2
+      - name: Build jar
+        run: |
+          ./mvnw clean package
+      - name: Rename the artifact
+        run: cp target/management-*.jar ~/figure.kim/management/backend-social-network-${{ github.sha }}.jar
+
+
