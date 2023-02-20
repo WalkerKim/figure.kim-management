@@ -137,7 +137,6 @@ public class ContentService {
     }
 
     public Publisher<Content> getContentList(MultiValueMap<String, String> params ) {
-        System.out.println("getContentList");
         var pageRequest = PageRequest.of(Integer.parseInt(params.get("offset").get(0)), Integer.parseInt(params.get("limit").get(0)), Sort.by("id").ascending());
         Flux<Content> contentEntityFlux = Mono.just(pageRequest).flatMapMany(contentRepository::findBy);
         return contentEntityFlux;

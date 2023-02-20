@@ -1,4 +1,4 @@
-export const serverHost = "http://localhost:8888";
+export const serverHost = import.meta.env.VITE_BACKEND_ADDR??"http://localhost:8889";
 
 export function deleteDataWithHost(url, bodyData, autoAlertBool){
     return fetchWithMethod("DELETE", url, bodyData).then(res => autoAlertFunc(res, autoAlertBool));
@@ -12,12 +12,14 @@ export function postDataWithHost(url, bodyData, autoAlertBool){
 export function getDataWithHost(url, autoAlertBool){
     console.log(url)
     return fetch(serverHost + url, {
+        credentials: "include",
         method: "GET",
         headers: {
             'Content-Type': 'application/json',
         }
-    }).then(i=>i.json()).then(res => autoAlertFunc(res, autoAlertBool));
+    }).then(res => autoAlertFunc(res, autoAlertBool));
 }
+
 
 
 export function fetchWithMethod(method, url, bodyData){
@@ -30,19 +32,40 @@ export function fetchWithMethod(method, url, bodyData){
         }
         ,
         body: JSON.stringify(bodyData)
-    }).catch(e=>console.log(e.json()));
+    })
+}
+export async function testSession(){
+    return fetch(serverHost+"/session-test",{
+        method: "GET",
+        credentials: "include",
+        headers: {
+            'Content-Type': 'application/json'
+        }
+    })
 }
 
 function autoAlertFunc(res, autoAlertBool){
-    console.log(res, autoAlertBool)
-    if(autoAlertBool){
-        if(res.status>100&&res.status<300){
+
+
+    if(res.status>100&&res.status<300){
+        if(autoAlertBool){
             alert('Request complete.');
-        }else{
-            res.json().then(i => alert(i.message));
         }
+        return res.json();
+    }else if(res.status==401) {
+        if(autoAlertBool){
+            alert('로그인 정보 없음');
+        }
+        return res.json();
     }else{
+        return res.json().then(i => {
+            console.log("a",i)
+            if(autoAlertBool){
+                alert(i.defaultMessage)
+            }
+            throw new Error(i.defaultMessage);
+        });
 
     }
-    return res;
+
 }

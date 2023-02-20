@@ -10,7 +10,7 @@
 
         await tick();
         console.log(categoryResult)
-        categoryArray = categoryResult;
+        categoryArray = categoryResult??[];
         console.log(categoryArray)
         selectedCategoryIdArray = selectedCategoryIdArray ?? [];
         // selectedCategoryIdArray.forEach(categoryId => {

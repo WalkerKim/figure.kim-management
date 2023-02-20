@@ -4,12 +4,14 @@
 	"scripts": {
 		"management-dev": "vite dev",
 		"management-build": "vite build",
+		"management-prod-build": "vite build --mode prod",
 		"management-preview": "vite preview"
 	},
 	"devDependencies": {
 		"@fontsource/fira-mono": "^4.5.0",
 		"@neoconfetti/svelte": "^1.0.0",
 		"@sveltejs/adapter-auto": "^1.0.0",
+		"@sveltejs/adapter-node": "^1.1.8",
 		"@sveltejs/adapter-static": "^1.0.0",
 		"@sveltejs/kit": "^1.0.0",
 		"autoprefixer": "^10.4.13",
@@ -22,9 +24,11 @@
 	},
 	"type": "module",
 	"dependencies": {
+		"dotenv": "^16.0.3",
 		"github-markdown-css": "^5.1.0",
 		"gridjs": "^5.1.0",
 		"gridjs-svelte": "^2.1.1",
+		"http-proxy-middleware": "^2.0.6",
 		"rxjs": "^6.6.7",
 		"svelte-rx": "^0.0.7"
 	}

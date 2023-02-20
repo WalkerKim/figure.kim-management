@@ -1,4 +1,6 @@
 <script>
+    import {beforeUpdate} from "svelte";
+
     export let url;
     import Grid from "gridjs-svelte"
     import {h} from "gridjs"
@@ -8,10 +10,14 @@
 
 
     let gridInstance;
+    beforeUpdate(()=>{
+        console.log(gridInstance)
+    })
 
     function getSettings() {
         const settings = {
-            width: "auto",
+            // width: "100%",
+            autoWidth:false,
             columns: [
                 {
                     id: "createdAt", formatter: (cell, row) => new Date(cell).toLocaleString()
@@ -19,24 +25,31 @@
                     name: "createAt"
                 },
                 {id: "id", name: "id"},
-                {id: "title", name: "title"},
-                {id: "description", name: "description"},
+                {id: "title", name: "title", width: "50%"},
+                {id: "description", name: "description", formatter: cell=>{
+                    if((cell??"").length >10){
+                        return cell.substring(0, 20) + "...";
+                    }else{
+                        return cell;
+                    }
+                    console.log((cell??"").length)
+                        return cell
+                    }},
                 {id: "isDraft", name: "isDraft", formatter: cell => cell ? "true" : "false"},
                 {id: "isPublished", name: "isPublished", formatter: cell => cell ? "true" : "false"},
                 {
                     id: "tagList", name: "tagList", formatter: (cell, row) => {
-                        return Array.isArray(cell) ? cell.map(i => i.id).join(",") : cell;
+                        return Array.isArray(cell) ? cell.map(i => i.id).join(", ") : cell;
                     }
                 },
                 {
-                    id: "categoryList", name: "Category", formatter: (cell, row) => {
-                        return Array.isArray(cell) ? cell.map(i => i.id).join(",") : cell;
+                    id: "categoryList", name: "Category", width : "10px", formatter: (cell, row) => {
+                        return Array.isArray(cell) ? cell.map(i => i.id).join(", ") : cell;
                     }
                 },
                 {id: "lastModifiedAt", name: "lastModifiedAt", formatter: cell => new Date(cell).toLocaleString()},
                 {
                     id: "id", name: "action", formatter: (cell, row) => {
-                        console.log(cell)
                         return h('div', {className: 'inline-flex w-full', id: 'foo'},
                             h('button', {
                                 className: "inline-flex mr-3 bg-green-900 hover:bg-green-700 border-green-400 text-green-400 px-2 py-1 rounded w-auto whitespace-nowrap",
@@ -73,11 +86,22 @@
             server: {
                 url: url,
                 data: async (opts) => {
-                    console.log(opts)
                     let contentListPromise = fetchWithMethod("GET", opts.url);
                     let countPromise = fetchWithMethod("GET", url + "/count");
-                    const contentList = await contentListPromise.then(res => res.json());
-                    const count = await countPromise.then(res => res.json());
+                    const contentList = await contentListPromise.then(res => {
+                        if(res.ok){
+                            return res.json()
+                        }else{
+                            throw new Error(res)
+                        }
+                    })
+                    const count = await countPromise.then(res => {
+                        if(res.ok){
+                            return res.json()
+                        }else{
+                            throw new Error(res)
+                        }
+                    });
                     let result = {};
                     result["data"] = contentList;
                     result["total"] = count;
@@ -89,6 +113,7 @@
             className: {
                 table: 'bg-custom-black-900',
                 tbody: 'bg-custom-black-900',
+                td:'break-word',
                 container: 'mt-0 pt-0',
                 paginationSummary: 'hidden sm:inline',
                 search: 'w-full sm:w-auto'
