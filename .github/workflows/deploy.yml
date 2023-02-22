@@ -21,7 +21,7 @@ jobs:
       - name: Checkout-common
         uses: actions/checkout@v3.3.0
         with:
-          repository: WalkerKim/management-common
+          repository: WalkerKim/figure.kim-common
           path: ./management-common
       - name: install common
         run: |
