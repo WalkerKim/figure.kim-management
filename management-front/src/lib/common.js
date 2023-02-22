@@ -1,4 +1,4 @@
-export const serverHost = import.meta.env.VITE_BACKEND_ADDR??"http://localhost:8889";
+export const serverHost = import.meta.env.VITE_BACKEND_ADDR??"http://localhost:8888";
 
 export function deleteDataWithHost(url, bodyData, autoAlertBool){
     return fetchWithMethod("DELETE", url, bodyData).then(res => autoAlertFunc(res, autoAlertBool));

@@ -21,7 +21,7 @@ import static org.springframework.web.reactive.function.server.RequestPredicates
 @Configuration
 public class ContentRouter {
 
-    @Value("${admin.username}")
+    @Value("${admin.username:admin}")
     String username;
 
     @Bean

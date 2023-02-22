@@ -18,20 +18,27 @@ jobs:
         uses: stCarolas/setup-maven@v.4.5
         with:
           maven-version: 3.8.2
+      - name: Install Node.js
+        uses: actions/setup-node@v3
       - name: Checkout-common
         uses: actions/checkout@v3.3.0
         with:
           repository: WalkerKim/figure.kim-common
           path: ./management-common
       - name: install common
-        run: |
-          ./management-common/mvnw clean install -DskipTests
+        run: ./management-common/mvnw -f ./management-common/pom.xml clean install -DskipTests
       - name: Checkout-management
         uses: actions/checkout@v3.3.0
       - name: Build jar
         run: |
           ./mvnw clean install -DskipTests
       - name: Rename the artifact
-        run: cp target/management-*.jar ~/figure.kim/management/backend-social-network-${{ github.sha }}.jar
+        run: cp target/management-*.jar ~/figure.kim/management/management-backend.jar
+      - name: frontend pnpm install, build
+        run: |
+          cd ./management-front
+          npm install
+          DOTENV_CONFIG_PATH=/home/dp/figure.kim/management/.env.prod.local npm run management-prod-build
+
 
 
