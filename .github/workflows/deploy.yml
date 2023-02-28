@@ -39,6 +39,7 @@ jobs:
           cd ./management-front
           npm install
           DOTENV_CONFIG_PATH=/home/dp/figure.kim/management/.env.prod.local npm run management-prod-build
+#          node build
 
 
 
