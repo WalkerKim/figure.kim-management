@@ -10,8 +10,8 @@ const config = {
             // pages: 'build',
             // assets: 'build',
             fallback: '200.html',
-                // pages: process.env.VITE_BUILD_PATH ?? 'build',
-                // assets: process.env.VITE_BUILD_PATH ?? 'build',
+            pages: process.env.VITE_BUILD_PATH ?? 'build',
+            assets: process.env.VITE_BUILD_PATH ?? 'build',
             // strict:true
             }
         ),
