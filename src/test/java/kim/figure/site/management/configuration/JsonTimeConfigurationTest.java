@@ -25,10 +25,8 @@ class JsonTimeConfigurationTest {
         Instant instant = Instant.ofEpochMilli(0);
         Map<String, Object> testMap = new HashMap<>();
         testMap.put("time", instant);
-        System.out.println(instant);
         try {
             var test = objectMapper.writeValueAsString(testMap);
-            System.out.println(test);
         } catch (JsonProcessingException e) {
             throw new RuntimeException(e);
         }

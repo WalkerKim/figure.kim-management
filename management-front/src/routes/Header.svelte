@@ -1,13 +1,13 @@
 <script>
     import {page} from '$app/stores';
-    import logo from '$lib/images/Figure.kim-200.png';
+    // import logo from '%sveltekit.assets%/favicon/228w/favicon.png';
 </script>
 
 <header>
     <div class="text-gray-500 body-font pb-1 h-16 fixed bg-custom-black-900 w-full z-20 h-20">
         <div class="mx-auto flex flex-wrap sm:px-5 px-0 sm:flex-row items-center">
             <a href="/" class="flex my-5 title-font font-medium items-center text-gray-900 cursor-pointer sm:pl-0 pl-5">
-                <img src={logo} alt="SvelteKit" class="max-h-10"/>
+                <img src="/favicon/228w/favicon.png" alt="SvelteKit" class="max-h-10 bg-white"/>
                 <span class="flex sm:hidden md:flex ml-3 lg:text-xl text-white">Figuer.kim</span><span
                     class="flex sm:hidden md:flex ml-3 lg:text-xl text-green-400">Manager</span>
             </a>

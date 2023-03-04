@@ -3,6 +3,13 @@
 // const { colors: defaultColors } = require('tailwindcss/defaultTheme')
 // const defaultTheme = require('tailwindcss/defaultTheme')
 const defaultColors = require('tailwindcss/colors')
+
+delete defaultColors.lightBlue;
+delete defaultColors.warmGray;
+delete defaultColors.trueGray;
+delete defaultColors.coolGray;
+delete defaultColors.blueGray;
+
 const colors = {
   ...defaultColors
   ,

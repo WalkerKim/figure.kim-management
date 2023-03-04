@@ -54,7 +54,7 @@
 
 </script>
 <template>
-    <div class="mb-5" on:click={()=>    console.log(editor)}>
+    <div class="mb-5">
         <CategoryChoice bind:selectedCategoryIdArray={content.categoryIdList} isActiveAutoSelectParent={true}/>
     </div>
     <ContentProps bind:content={content}></ContentProps>

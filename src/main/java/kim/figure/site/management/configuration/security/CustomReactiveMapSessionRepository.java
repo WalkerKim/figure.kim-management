@@ -52,11 +52,11 @@ public class CustomReactiveMapSessionRepository extends ReactiveMapSessionReposi
                 .flatMap(id -> findById(id)).filter(mapSession -> !mapSession.isExpired()).count().flatMap(aLong -> {
                     if (aLong.longValue() > 0l) {
                         //expired되지 않은 세션이 있으면
-                        System.out.println(username + " unexpired");
+                        log.debug(username + " unexpired");
                         return Mono.just(Boolean.FALSE);
                     } else {
                         //expired되지 않은 세션이 없으면
-                        System.out.println(username + " expired");
+                        log.debug(username + " expired");
                         return Mono.just(Boolean.TRUE);
                     }
                 });

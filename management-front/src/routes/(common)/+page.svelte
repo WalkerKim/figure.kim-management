@@ -1,10 +1,10 @@
 <script></script>
 
 <svelte:head>
-	<title>Home</title>
-	<meta name="description" content="Svelte demo app" />
+	<title>Figure.kim - management</title>
+	<meta name="description" content="Figure.kim Management System" />
 </svelte:head>
 
 <section>
-
+Figure.kim Management System
 </section>
