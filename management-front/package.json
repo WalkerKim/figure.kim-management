@@ -5,7 +5,8 @@
 		"management-dev": "vite dev",
 		"management-build": "vite build",
 		"management-prod-build": "vite build --mode prod",
-		"management-preview": "vite preview"
+		"management-preview": "vite preview",
+		"management-prod-preview": "vite preview --mode prod"
 	},
 	"devDependencies": {
 		"@fontsource/fira-mono": "^4.5.10",

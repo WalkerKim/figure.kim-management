@@ -1,12 +1,12 @@
 <script>
     import {afterUpdate, onMount, tick} from "svelte";
-    import {getDataWithHost} from "$lib/common.js";
+    import {getDataWithUrl} from "$lib/common.js";
 
     export let selectedCategoryIdArray;
     export let isActiveAutoSelectParent
     let categoryArray =[];
     onMount(async () => {
-        let categoryResult = await getDataWithHost("/category");
+        let categoryResult = await getDataWithUrl("/category");
 
         await tick();
         console.log(categoryResult)

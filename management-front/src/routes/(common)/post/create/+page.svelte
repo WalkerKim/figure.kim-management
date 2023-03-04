@@ -1,5 +1,5 @@
 <script>
-    import {postDataWithHost, putDataWithHost} from "$lib/common.js";
+    import {postDataWithUrl, putDataWithUrl} from "$lib/common.js";
     import MdEditor from "../MdEditor.svelte";
     import {onMount} from "svelte";
     import {goto} from "$app/navigation";
@@ -15,7 +15,7 @@
         content.ogKeywordList = content.ogKeywordList ?? [];
         console.log(content);
         // return
-        postDataWithHost("/content", content, true).then(res=>{
+        postDataWithUrl("/content", content, true).then(res=>{
             res.json().then(content => goto("/post/edit/"+content.id))
         });
     }
@@ -23,11 +23,12 @@
         content.rawContent = editor.invoke("getMarkdown");
         content.renderedContent = editor.invoke("getHtml");
         content.contentFormat = "MARKDOWN"
-        putDataWithHost("temp-content", content);
+        putDataWithUrl("temp-content", content);
     }
 
     onMount(async ()=>{
-        const res = await postDataWithHost("/temp-content");
+        const res = await postDataWithUrl("/temp-content");
+        console.log(res)
         content = await res;
     })
 

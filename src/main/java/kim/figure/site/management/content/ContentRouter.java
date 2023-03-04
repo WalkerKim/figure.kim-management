@@ -35,7 +35,6 @@ public class ContentRouter {
                 .andRoute(PUT("/content/{id}").and(accept(MediaType.APPLICATION_JSON)), contentHandler::putContent)
                 .andRoute(DELETE("/content/draft").and(accept(MediaType.APPLICATION_JSON)), contentHandler::deleteUneditedContent)
                 .andRoute(DELETE("/content/{id}").and(accept(MediaType.APPLICATION_JSON)), contentHandler::deleteContent)
-                .andRoute(GET("/test"), request -> okResponse(Mono.just(username), String.class))
                 ;
     }
 

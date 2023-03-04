@@ -1,5 +1,5 @@
 <script>
-    import {postDataWithHost} from "$lib/common.js";
+    import {postDataWithUrl} from "$lib/common.js";
     import {goto} from "$app/navigation";
 
     let result = null
@@ -23,7 +23,7 @@
         signInObject["password"] = password;
 
         try {
-            postDataWithHost("/login", signInObject)
+            postDataWithUrl("/login", signInObject)
                 .then(res => {
                     goto("/post");
                 }).catch(reason => {

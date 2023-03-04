@@ -1,21 +1,21 @@
 <script>
     import CategoryChoice from "./CategoryChoice.svelte";
-    import {deleteDataWithHost, postDataWithHost} from "$lib/common.js";
+    import {deleteDataWithUrl, postDataWithUrl} from "$lib/common.js";
 
-    let selectedCategoryIdArray = new Array();
+    let selectedCategoryIdArray = [];
     function deleteSelectedCategory(){
         selectedCategoryIdArray.forEach(id=>{
-            deleteDataWithHost("/category/"+id, null, true).then(i=>location.reload());
+            deleteDataWithUrl("/category/"+id, null, true).then(i=>location.reload());
         })
     }
 
     function submitParentCategory(){
         console.log(parentCategory)
-        postDataWithHost("/category", parentCategory, true).then(i=>location.reload());
+        postDataWithUrl("/category", parentCategory, true).then(i=>location.reload());
 
     }
     function submitChildCategory(){
-        postDataWithHost("/category", childCategory, true).then(i=>location.reload());
+        postDataWithUrl("/category", childCategory, true).then(i=>location.reload());
 
     }
 

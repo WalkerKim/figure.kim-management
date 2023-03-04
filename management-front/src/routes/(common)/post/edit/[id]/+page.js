@@ -1,9 +1,9 @@
 import {error} from '@sveltejs/kit';
-import {getDataWithHost} from "$lib/common.js";
+import {getDataWithUrl} from "$lib/common.js";
 
 /** @type {import('./$types').PageLoad} */
 export async function load({ params }) {
-    let result = await getDataWithHost("/content/" + params.id);
+    let result = await getDataWithUrl("/content/" + params.id);
     result.categoryList = result.categoryList ?? [];
     result.categoryIdList = result.categoryList.map(category=>category.id);
     return result;

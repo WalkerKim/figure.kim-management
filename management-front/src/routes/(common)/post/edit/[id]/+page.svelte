@@ -1,7 +1,7 @@
 <script>
     import '@toast-ui/editor/dist/toastui-editor-viewer.css';
     import MdEditor from "../../MdEditor.svelte";
-    import {postDataWithHost, putDataWithHost} from "$lib/common.js";
+    import {postDataWithUrl, putDataWithUrl} from "$lib/common.js";
     import {goto} from "$app/navigation";
 
     export let data;
@@ -12,11 +12,11 @@
 		data.renderedContent = editor.invoke("getHtml");
 		data.contentFormat = "MARKDOWN"
 		if(data.isDraft){
-			postDataWithHost("/content", data, true).then(res=>{
+			postDataWithUrl("/content", data, true).then(res=>{
 				res.json().then(content => goto("/post/edit/"+content.id))
 			});
 		}else{
-			putDataWithHost("/content/"+data.id, data, true).then(res=>{
+			putDataWithUrl("/content/"+data.id, data, true).then(res=>{
 				location.reload()
 			})
 		}
@@ -25,7 +25,7 @@
 		data.rawContent = editor.invoke("getMarkdown");
 		data.renderedContent = editor.invoke("getHtml");
 		data.contentFormat = "MARKDOWN"
-		putDataWithHost("temp-content", data);
+		putDataWithUrl("temp-content", data);
 	}
 
 </script>

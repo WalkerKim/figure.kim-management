@@ -1,15 +1,15 @@
 export const serverHost = import.meta.env.VITE_BACKEND_ADDR??"http://localhost:8888";
 
-export function deleteDataWithHost(url, bodyData, autoAlertBool){
+export function deleteDataWithUrl(url, bodyData, autoAlertBool){
     return fetchWithMethod("DELETE", url, bodyData).then(res => autoAlertFunc(res, autoAlertBool));
 }
-export function putDataWithHost(url, bodyData, autoAlertBool){
+export function putDataWithUrl(url, bodyData, autoAlertBool){
     return fetchWithMethod("PUT", url, bodyData).then(res => autoAlertFunc(res, autoAlertBool));
 }
-export function postDataWithHost(url, bodyData, autoAlertBool){
+export function postDataWithUrl(url, bodyData, autoAlertBool){
     return fetchWithMethod("POST", url, bodyData).then(res => autoAlertFunc(res, autoAlertBool));
 }
-export function getDataWithHost(url, autoAlertBool){
+export function getDataWithUrl(url, autoAlertBool){
     console.log(url)
     return fetch(serverHost + url, {
         credentials: "include",
@@ -55,6 +55,11 @@ function autoAlertFunc(res, autoAlertBool){
     }else if(res.status==401) {
         if(autoAlertBool){
             alert('로그인 정보 없음');
+        }
+        return res.json();
+    }else if(res.status==403) {
+        if(autoAlertBool){
+            alert('권한 없음');
         }
         return res.json();
     }else{

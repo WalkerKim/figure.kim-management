@@ -5,7 +5,7 @@
     import Grid from "gridjs-svelte"
     import {h} from "gridjs"
     import "$lib/grid.css";
-    import {deleteDataWithHost, fetchWithMethod} from "$lib/common.js";
+    import {deleteDataWithUrl, fetchWithMethod} from "$lib/common.js";
     import {goto} from "$app/navigation";
 
 
@@ -61,7 +61,7 @@
                                 className: "hidden sm:inline-flex bg-red-500 hover:bg-red-600 border-red-500 text-white px-2  py-1 rounded w-auto whitespace-nowrap",
                                 onClick: () => {
                                     if (confirm("삭제시 복구할 수 없습니다. 삭제하시겠습니까?")) {
-                                        deleteDataWithHost("/content/" + cell, null, true).then(() => {
+                                        deleteDataWithUrl("/content/" + cell, null, true).then(() => {
                                             if (gridInstance) {
                                                 gridInstance.updateConfig(getSettings()).forceRender()
                                             }

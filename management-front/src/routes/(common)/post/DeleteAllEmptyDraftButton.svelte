@@ -1,8 +1,8 @@
 <script>
-    import {deleteDataWithHost} from "$lib/common.js";
+    import {deleteDataWithUrl} from "$lib/common.js";
 
     export function deleteAllEmptyDraftPosts(){
-        deleteDataWithHost("/content/draft").then(res=>{
+        deleteDataWithUrl("/content/draft",null, true).then(res=>{
             location.reload(true);
         })
     }
