@@ -25,7 +25,7 @@
                     id: "id", name: "action", formatter: (cell, row) => {
                         return h('div', {className: 'inline-flex w-full', id: 'foo'},
                             h('button', {
-                                className: "inline-flex mr-3 bg-green-900 hover:bg-green-700 border-green-400 text-green-400 px-2 py-1 rounded w-auto whitespace-nowrap",
+                                className: "inline-flex mr-3 bg-blue-900 hover:bg-blue-700 border-blue-400 text-blue-400 px-2 py-1 rounded w-auto whitespace-nowrap",
                                 onClick: () => {
                                     goto("/tag/" + cell)
                                 }

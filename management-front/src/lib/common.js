@@ -51,22 +51,18 @@ function autoAlertFunc(res, autoAlertBool){
         if(autoAlertBool){
             alert('Request complete.');
         }
+        ;
         return res.json();
-    }else if(res.status==401) {
-        if(autoAlertBool){
-            alert('로그인 정보 없음');
-        }
-        return res.json();
-    }else if(res.status==403) {
-        if(autoAlertBool){
-            alert('권한 없음');
-        }
-        return res.json();
-    }else{
+    } else{
         return res.json().then(i => {
-            console.log("a",i)
             if(autoAlertBool){
-                alert(i.defaultMessage)
+                if(res.status==403) {
+                    alert('권한 없음');
+                }else if(res.status==401) {
+                    alert('로그인 정보 없음');
+                }else{
+                    alert(i.defaultMessage)
+                }
             }
             throw new Error(i.defaultMessage);
         });

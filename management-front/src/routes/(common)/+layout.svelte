@@ -1,21 +1,23 @@
 <script>
 	import Header from '../Header.svelte';
 	import '../styles.css';
-	import {onDestroy, onMount, beforeUpdate} from "svelte"
-	import {fetchWithMethod} from "$lib/common.js";
+	import {onDestroy, onMount, beforeUpdate, tick} from "svelte"
+	import {fetchWithMethod, serverHost} from "$lib/common.js";
 	import {goto} from "$app/navigation";
 
 	let isLogin = false;
 
-	onMount(()=>{
 
+	onMount(()=>{
+		console.log("onMount")
 	})
 	onDestroy(()=>{
 		console.log("onDestroy");
 	})
-	beforeUpdate(()=>{
+	beforeUpdate(async ()=>{
 		console.log("beforeUpdate");
-		fetchWithMethod("GET","/session-check").then(res=>{
+
+		await fetchWithMethod("GET","/session-check").then(res=>{
 			if(res.status==401){
 				if(confirm("로그인 정보가 없습니다. 로그인 페이지로 가실?")){
 					goto("/login")
@@ -26,7 +28,7 @@
 				// return res
 			}
 		})
-		console.log("onMount");
+		// await tick()
 	})
 
 

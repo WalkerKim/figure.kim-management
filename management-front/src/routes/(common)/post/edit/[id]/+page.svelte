@@ -42,12 +42,12 @@
 		<div class="flex">
 			{#if data.isDraft}
 				<button id="temp-store" name="temp-store" on:click={tempSubmit}
-						class="w-1/2 bg-green-400 hover:bg-green-200 hover:text-white border-green400 text-white py-2 px-4 rounded border-0 ml-2">
+						class="w-1/2 bg-blue-400 hover:bg-blue-200 hover:text-white border-green400 text-white py-2 px-4 rounded border-0 ml-2">
 					임시 저장
 				</button>
 			{/if}
 			<button id="submit" name="submit" on:click={submit}
-					class="w-1/2 bg-green-400 hover:bg-green-200 hover:text-white border-green400 text-white py-2 px-4 rounded border-0 ml-2">
+					class="w-1/2 bg-blue-400 hover:bg-blue-200 hover:text-white border-green400 text-white py-2 px-4 rounded border-0 ml-2">
 				저장
 			</button>
 		</div>
