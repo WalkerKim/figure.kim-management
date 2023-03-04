@@ -28,7 +28,7 @@
 
     onMount(async ()=>{
         const res = await postDataWithHost("/temp-content");
-        content = await res.json();
+        content = await res;
     })
 
 </script>
