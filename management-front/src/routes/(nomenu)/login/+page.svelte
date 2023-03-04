@@ -25,7 +25,7 @@
         try {
             postDataWithUrl("/login", signInObject)
                 .then(res => {
-                    goto("/post");
+                    goto("/");
                 }).catch(reason => {
                 errorBool = true;
                 errorMessage = reason.message??"Network Error";

@@ -1,5 +1,6 @@
 <script>
     import {page} from '$app/stores';
+    import {getDataWithUrl} from "$lib/common.js";
     // import logo from '%sveltekit.assets%/favicon/228w/favicon.png';
 </script>
 
@@ -31,6 +32,10 @@
                                     {$page.url.pathname === '/tag' ? 'sm:border-b-2 sm:border-green-400 text-white hover:text-green-300 sm:text-green-400 mb-0 bg-green-400 sm:bg-opacity-0 ':'bg-gray-800 sm:bg-opacity-0'}
                             ">
                             <a href="/tag">Tag</a>
+                        </li>
+                        <li
+                                class="-mr-1 sm:mr-5 sm:hover:text-gray-300 cursor-pointer my-0 sm:my-1 border-t-transparent py-5 sm:px-2 sm:w-auto w-1/2 sm:inline inline-block text-center" on:click={()=>getDataWithUrl("/logout")}>
+                            <a href="/tag">Logout</a>
                         </li>
                     </ul>
                 </div>
