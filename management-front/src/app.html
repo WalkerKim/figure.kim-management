@@ -1,7 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
 <script>
-
 </script>
 	<head>
 		<meta charset="utf-8" />
@@ -17,8 +16,19 @@
 		<meta name="viewport" content="width=device-width" />
 		%sveltekit.head%
 	</head>
+
+	<!-- Google tag (gtag.js) -->
+	<div>
+		<script async src="%sveltekit.env.PUBLIC_GA_SCRIPT_URL%"></script>
+		<script>
+			// To avoid IDE syntax correction comment(//) is head of the line. so you should input PUBLIC_GA_SCRIPT_LITERAL between "" and start with change line
+			//%sveltekit.env.PUBLIC_GA_SCRIPT_LITERAL%
+		</script>
+
+	</div>
+
 	<body data-sveltekit-prefetch class="bg-white">
+
 		<div style="display: contents">%sveltekit.body%</div>
 	</body>
 </html>
-

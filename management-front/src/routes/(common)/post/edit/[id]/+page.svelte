@@ -25,7 +25,7 @@
 		data.rawContent = editor.invoke("getMarkdown");
 		data.renderedContent = editor.invoke("getHtml");
 		data.contentFormat = "MARKDOWN"
-		putDataWithUrl("temp-content", data);
+		putDataWithUrl("/content/"+data.id, data);
 	}
 
 </script>

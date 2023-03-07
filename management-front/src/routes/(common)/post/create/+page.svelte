@@ -23,7 +23,7 @@
         content.rawContent = editor.invoke("getMarkdown");
         content.renderedContent = editor.invoke("getHtml");
         content.contentFormat = "MARKDOWN"
-        putDataWithUrl("temp-content", content);
+        putDataWithUrl("/content/"+content.id, content);
     }
 
     onMount(async ()=>{

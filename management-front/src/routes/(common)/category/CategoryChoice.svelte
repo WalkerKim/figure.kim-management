@@ -54,7 +54,7 @@
         </div>
         <div class="grid grid-cols-6 col-span-12">
             {#each categoryArray as parentCategory}
-                <div class="border-2 col-span-1">
+                <div class="border-2 col-span-1 p-1">
                     <div class="w-full">
                         <input type="checkbox" value="{parentCategory.id}" name="category"
                                id="{'category-'+parentCategory.id}"
