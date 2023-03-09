@@ -1,7 +1,6 @@
 package kim.figure.site.management.content;
 
 import kim.figure.site.common.content.Content;
-import kim.figure.site.management.common.ValidationUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Component;
@@ -23,10 +22,6 @@ public class ContentHandler {
 
     @Autowired
     ContentRepository contentRepository;
-
-
-    @Autowired
-    ValidationUtil validationUtil;
 
     @Autowired
     ContentService contentService;

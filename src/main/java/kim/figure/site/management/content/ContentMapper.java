@@ -9,6 +9,8 @@ public interface ContentMapper {
     ContentMapper INSTANCE = Mappers.getMapper(ContentMapper.class);
 
     Content contentPostToEntity(ContentDto.Post postContent);
+    ContentDto.Put contentEntityToPut(Content content);
+
     Content contentPutToEntity(ContentDto.Put postContent);
 
     ContentDto.TempGet contentEntityToGet(Content content);

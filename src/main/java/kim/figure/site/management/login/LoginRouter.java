@@ -21,6 +21,8 @@ public class LoginRouter {
     public RouterFunction<ServerResponse> LoginRoutes(LoginHandler loginHandler){
         return RouterFunctions
                 .route(POST("/login").and(contentType(MediaType.APPLICATION_JSON)), loginHandler::login)
-                .andRoute(GET("session-check").and(contentType(MediaType.APPLICATION_JSON)), req -> ServerResponse.ok().build());
+                .andRoute(GET("/session-check"), req -> {
+                    return ServerResponse.ok().build();
+                });
     }
 }

@@ -1,5 +1,6 @@
 package kim.figure.site.management.content;
 
+import jakarta.validation.constraints.NotNull;
 import kim.figure.site.common.content.ContentFormat;
 import kim.figure.site.common.tag.Tag;
 import lombok.*;
@@ -86,6 +87,7 @@ public class ContentDto {
 
           private Boolean isPublished;
 
+          @NotNull(message = "tagList cannot be null")
           private List<Tag> tagList;
 
           private List<String> categoryIdList;

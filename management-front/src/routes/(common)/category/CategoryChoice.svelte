@@ -7,11 +7,8 @@
     let categoryArray =[];
     onMount(async () => {
         let categoryResult = await getDataWithUrl("/category");
-
         await tick();
-        console.log(categoryResult)
         categoryArray = categoryResult??[];
-        console.log(categoryArray)
         selectedCategoryIdArray = selectedCategoryIdArray ?? [];
         // selectedCategoryIdArray.forEach(categoryId => {
         //     document.getElementById('category-'+categoryId).checked = true

@@ -55,16 +55,15 @@ public class ContentService {
         return monoDto.map(validationUtil::validateWithIdentity)
                 .map(content->{
                     if(content.getDescription()==null || content.getDescription().trim().equals("")){
-
                         content.setDescription(
                                 extractDescriptionFromHtml(content.getRenderedContent())
                         );
-
                     }
                     return content;
                 })
                 .flatMap(dto-> {
                     dto.setId(id);
+                    saveTagToTagRepository(dto.getTagList()).subscribe();
                     return Mono.zip(Mono.just(ContentMapper.INSTANCE.contentPutToEntity(dto)), categoryRepository.findAllById(dto.getCategoryIdList()).collectList());
                 })
                 .map(tuple2 -> {
@@ -102,7 +101,7 @@ public class ContentService {
                                 extractDescriptionFromHtml(content.getRenderedContent())
                         );
                     }
-                    saveTag(dto.getTagList());
+                    saveTagToTagRepository(dto.getTagList()).subscribe();
                     content.setId(newId);
                     return Mono.zip(Mono.just(content), Mono.just(dto.getId()), categoryRepository.findAllById(dto.getCategoryIdList()).collectList());
                 })
@@ -114,12 +113,6 @@ public class ContentService {
                     newContent.setCategoryList(tuple3.getT3());
                     if (newContent.getIsPublished()) {
                         newContent.setPublishedAt(Instant.now());
-                    }
-                    if (tuple3.getT1().getTagList() != null) {
-                        tagRepository.saveAll(tuple3.getT1().getTagList().stream().map(tag->{
-                            tag.setId(tag.getId().replaceAll(" ", ""));
-                            return tag;
-                        }).distinct().toList()).subscribe();
                     }
                     return contentRepository.save(newContent).doOnSuccess(i-> contentRepository.deleteById(tuple3.getT2()));
                 }));
@@ -142,11 +135,11 @@ public class ContentService {
         return contentEntityFlux;
     }
 
-    private void saveTag(List<Tag> tagList){
-        tagRepository.saveAll(tagList.stream().map(tag->{
+    private Flux<Tag> saveTagToTagRepository(List<Tag> tagList){
+        return tagRepository.saveAll(tagList.stream().map(tag->{
             tag.setId(tag.getId().replaceAll(" ", ""));
             return tag;
-        }).distinct().toList()).subscribe();
+        }).distinct().toList());
     }
 
     public Mono<Long> getContentCount() {

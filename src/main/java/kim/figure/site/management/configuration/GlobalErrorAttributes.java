@@ -2,6 +2,7 @@ package kim.figure.site.management.configuration;
 
 
 import kim.figure.site.management.common.exception.GlobalException;
+import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.web.error.ErrorAttributeOptions;
 import org.springframework.boot.web.reactive.error.DefaultErrorAttributes;
@@ -38,6 +39,7 @@ public class GlobalErrorAttributes extends DefaultErrorAttributes {
             map.put("defaultMessage", throwable.getMessage());
             return map;
         }else{
+            throwable.printStackTrace();
             map.put("exception", throwable.getClass().getSimpleName());
             map.put("messageCode", "unhandledException");
             map.put("messageCode", "unhandledException");
