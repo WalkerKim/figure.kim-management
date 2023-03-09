@@ -6,6 +6,7 @@ import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
 import lombok.extern.log4j.Log4j2;
+import org.springframework.core.io.buffer.DataBufferUtils;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.web.server.authentication.ServerAuthenticationConverter;
@@ -18,30 +19,21 @@ import java.io.IOException;
 @Log4j2
 public class LoginJsonAuthConverter implements ServerAuthenticationConverter {
 
-    private final ObjectMapper mapper;
+    private final ObjectMapper objectMapper;
 
     @Override
     public Mono<Authentication> convert(ServerWebExchange exchange) {
-        return exchange.getRequest().getBody()
-                .next()
-                .flatMap(buffer -> {
+        return DataBufferUtils.join(exchange.getRequest().getBody())
+                .map(buffer -> {
                     try {
-                        LoginRequestDto request = mapper.readValue(buffer.asInputStream(), LoginRequestDto.class);
-                        return Mono.just(request);
+                        LoginRequestDto request = objectMapper.readValue(buffer.asInputStream(), LoginRequestDto.class);
+                        return new UsernamePasswordAuthenticationToken(request.getUsername(), request.getPassword());
                     } catch (IOException e) {
                         log.debug("Can't read login request from JSON");
-                        return Mono.error(e);
+                        throw new RuntimeException(e);
                     }
-                })
-                .map(request -> new UsernamePasswordAuthenticationToken(request.getUsername(), request.getPassword()));
+                });
     }
-
-    /**
-     * Converts a {@link ServerWebExchange} to an {@link Authentication}
-     *
-     * @param exchange The {@link ServerWebExchange}
-     * @return A {@link Mono} representing an {@link Authentication}
-     */
 
     @Getter
     @Setter
