@@ -13,7 +13,6 @@
         content.contentFormat = "MARKDOWN"
         content.tagList = content.tagList ?? [];
         content.ogKeywordList = content.ogKeywordList ?? [];
-        console.log(content);
         // return
         postDataWithUrl("/content", content, true).then(res=>{
             res.json().then(content => goto("/post/edit/"+content.id))
@@ -23,7 +22,9 @@
         content.rawContent = editor.invoke("getMarkdown");
         content.renderedContent = editor.invoke("getHtml");
         content.contentFormat = "MARKDOWN"
-        putDataWithUrl("/content/"+content.id, content);
+        content.tagList = content.tagList ?? [];
+        content.ogKeywordList = content.ogKeywordList ?? [];
+        putDataWithUrl("/content/"+content.id, content, true);
     }
 
     onMount(async ()=>{
