@@ -10,6 +10,7 @@ public interface ContentMapper {
 
     Content contentPostToEntity(ContentDto.Post postContent);
     ContentDto.Put contentEntityToPut(Content content);
+    ContentDto.Post contentEntityToPost(Content content);
 
     Content contentPutToEntity(ContentDto.Put postContent);
 
