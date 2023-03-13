@@ -1,8 +1,9 @@
 package kim.figure.site.management.content;
 
-import org.springframework.data.mongodb.core.MongoOperations;
+import org.springframework.data.mongodb.core.ReactiveMongoOperations;
 import org.springframework.data.mongodb.core.query.Update;
 import org.springframework.stereotype.Service;
+import reactor.core.publisher.Mono;
 
 import java.util.Objects;
 
@@ -17,16 +18,16 @@ import static org.springframework.data.mongodb.core.query.Query.query;
  */
 @Service
 public class ContentSequenceService {
-    final MongoOperations mongoOperations;
+    final ReactiveMongoOperations reactiveMongoOperations;
 
-    public ContentSequenceService(MongoOperations mongoOperations) {
-        this.mongoOperations = mongoOperations;
+    public ContentSequenceService(ReactiveMongoOperations reactiveMongoOperations) {
+        this.reactiveMongoOperations = reactiveMongoOperations;
     }
 
-    public long getSeq(String sequenceName){
-        ContentSequence sequencer = mongoOperations.findAndModify(query(where("_id").is(sequenceName)),
+    public Mono<Long> getSeq(String sequenceName){
+        Mono<ContentSequence> sequencer = reactiveMongoOperations.findAndModify(query(where("_id").is(sequenceName)),
                 new Update().inc("seq",1), options().returnNew(true).upsert(true),
                 ContentSequence.class);
-        return !Objects.isNull(sequencer) ? sequencer.getSeq() : 1;
+        return !Objects.isNull(sequencer) ? sequencer.map(ContentSequence::getSeq) : Mono.just(1L);
     }
 }

@@ -77,33 +77,34 @@ public class ContentService {
 
     public Mono<Content> postContent(Mono<ContentDto.Post> postMono) {
         return postMono.map(validationUtil::validateWithIdentity)
-                .flatMap(dto->{
-                    long newId = contentSequenceService.getSeq(Content.SEQUENCE_NAME);
+                .flatMap(dto-> Mono.zip(Mono.just(dto), contentSequenceService.getSeq(Content.SEQUENCE_NAME)))
+                .flatMap(tuple2->{
+                    //get new content id
                     //copy temp images to new content id directory
-                    final String tempImageDir = projectStaticPath + "/assets/image/" + dto.getId();
+                    final String tempImageDir = projectStaticPath + "/assets/image/" + tuple2.getT2();
                     Path tempImagePath = Path.of(tempImageDir);
                     boolean tempImageDirectoryExists = Files.exists(tempImagePath);
                     if(!tempImageDirectoryExists){
                         //temp content has no images
                     }else{
-                        final String destImageDir = projectStaticPath + "/assets/image/" + newId;
+                        final String destImageDir = projectStaticPath + "/assets/image/" + tuple2.getT2();
                         try {
                             Files.move(tempImagePath, Path.of(destImageDir));
                         } catch (IOException e) {
                             return Mono.error(new RuntimeException("Cannot move image directory [" + tempImagePath +"] to ["+destImageDir+"]" ));
                         }
                     }
-                    Content content = ContentMapper.INSTANCE.contentPostToEntity(dto);
-                    content.setRawContent(content.getRawContent().replaceAll("/assets/image/"+dto.getId(),"/assets/image/"+newId));
-                    content.setRenderedContent(content.getRenderedContent().replaceAll("/assets/image/"+dto.getId(),"/assets/image/"+newId));
+                    Content content = ContentMapper.INSTANCE.contentPostToEntity(tuple2.getT1());
+                    content.setRawContent(content.getRawContent().replaceAll("/assets/image/"+tuple2.getT1().getId(),"/assets/image/"+tuple2.getT2()));
+                    content.setRenderedContent(content.getRenderedContent().replaceAll("/assets/image/"+tuple2.getT1().getId(),"/assets/image/"+tuple2.getT2()));
                     if(content.getDescription()==null || content.getDescription().trim().equals("")){
                         content.setDescription(
                                 extractDescriptionFromHtml(content.getRenderedContent())
                         );
                     }
-                    saveTagToTagRepository(dto.getTagList()).subscribe();
-                    content.setId(newId);
-                    return Mono.zip(Mono.just(content), Mono.just(dto.getId()), categoryRepository.findAllById(dto.getCategoryIdList()).collectList());
+                    saveTagToTagRepository(tuple2.getT1().getTagList()).subscribe();
+                    content.setId(tuple2.getT2());
+                    return Mono.zip(Mono.just(content), Mono.just(tuple2.getT1().getId()), categoryRepository.findAllById(tuple2.getT1().getCategoryIdList()).collectList());
                 })
                 .flatMap(tuple3 -> contentRepository.findById(tuple3.getT2()).flatMap(tempContent -> {
                     Content newContent = tuple3.getT1();
@@ -114,7 +115,9 @@ public class ContentService {
                     if (newContent.getIsPublished()) {
                         newContent.setPublishedAt(Instant.now());
                     }
-                    return contentRepository.save(newContent).doOnSuccess(i-> contentRepository.deleteById(tuple3.getT2()));
+                    return contentRepository.save(newContent).doOnSuccess(i-> {
+                        contentRepository.deleteById(tuple3.getT2()).subscribe();
+                    });
                 }));
     }
 
