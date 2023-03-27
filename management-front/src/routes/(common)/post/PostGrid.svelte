@@ -11,7 +11,7 @@
 
     let gridInstance;
     beforeUpdate(()=>{
-        console.log("444",gridInstance)
+        // console.log("444",gridInstance)
     })
 
     function getSettings() {
@@ -190,7 +190,7 @@
         ],
         pagination: {
             enable: true,
-            limit: 5,
+            limit: 15,
             server: {
                 url: (prev, page, limit) => {
                     return `${prev}?limit=${limit}&offset=${page}`
