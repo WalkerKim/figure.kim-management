@@ -133,7 +133,15 @@ public class ContentService {
     }
 
     public Publisher<Content> getContentList(MultiValueMap<String, String> params ) {
-        var pageRequest = PageRequest.of(Integer.parseInt(params.get("offset").get(0)), Integer.parseInt(params.get("limit").get(0)), Sort.by("id").ascending());
+        String sortColumnName = params.getOrDefault("order",List.of("id")).get(0);
+        String sortDirection = params.getOrDefault("dir",List.of("desc")).get(0);
+        var sort = Sort.by(sortColumnName);
+        if(sortDirection.equals("desc")){
+            sort = sort.descending();
+        }else if(sortDirection.equals("asc")){
+            sort = sort.ascending();
+        }
+        var pageRequest = PageRequest.of(Integer.parseInt(params.get("offset").get(0)), Integer.parseInt(params.get("limit").get(0)), sort);
         Flux<Content> contentEntityFlux = Mono.just(pageRequest).flatMapMany(contentRepository::findBy);
         return contentEntityFlux;
     }
