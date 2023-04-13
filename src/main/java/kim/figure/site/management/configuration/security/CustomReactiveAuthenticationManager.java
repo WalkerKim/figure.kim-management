@@ -25,7 +25,7 @@ public class CustomReactiveAuthenticationManager extends UserDetailsRepositoryRe
 
     public CustomReactiveAuthenticationManager(CustomUserDetailsService userDetailsService) {
         super(userDetailsService);
-        this.userDetailsService = (CustomUserDetailsService)userDetailsService;
+        this.userDetailsService = userDetailsService;
     }
 
     @Override
@@ -41,27 +41,24 @@ public class CustomReactiveAuthenticationManager extends UserDetailsRepositoryRe
                 return Mono.error(new RuntimeException("Login attempt limit exceeded"));
             }else{
                 if(authentication.getCredentials()==null){
-                    adminAccountRepository.findByUsernameAndIsActive(userDetails.getUsername(), true).flatMap(accountDocument -> {
+                    return adminAccountRepository.findByUsernameAndIsActive(userDetails.getUsername(), true).flatMap(accountDocument -> {
                         accountDocument.setAttemptCount(accountDocument.getAttemptCount() + 1);
                         return adminAccountRepository.save(accountDocument);
-                    }).subscribe();
-                    return Mono.error(new RuntimeException("Wrong password"));
+                    }).then(Mono.error(new RuntimeException("Wrong password")));
                 }else{
                     return super.authenticate(authentication).doOnError(throwable -> {
                         log.debug(throwable);
                         if(throwable instanceof BadCredentialsException){
-//                        ((CustomUserDetails) userDetails).setAttemptCount();
                             adminAccountRepository.findByUsernameAndIsActive(userDetails.getUsername(), true).flatMap(accountDocument -> {
                                 accountDocument.setAttemptCount(accountDocument.getAttemptCount() + 1);
                                 return adminAccountRepository.save(accountDocument);
                             }).subscribe();
+
                         }
-                    }).doOnSuccess(successAuthentication -> {
-                        adminAccountRepository.findByUsernameAndIsActive(userDetails.getUsername(), true).flatMap(accountDocument -> {
-                            accountDocument.setAttemptCount(0);
-                            return adminAccountRepository.save(accountDocument);
-                        }).subscribe();
-                    });
+                    }).doOnSuccess(successAuthentication -> adminAccountRepository.findByUsernameAndIsActive(userDetails.getUsername(), true).flatMap(accountDocument -> {
+                        accountDocument.setAttemptCount(0);
+                        return adminAccountRepository.save(accountDocument);
+                    }).subscribe());
                 }
 
             }

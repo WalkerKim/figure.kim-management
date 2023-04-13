@@ -19,6 +19,7 @@ import org.springframework.test.web.reactive.server.WebTestClient;
 import reactor.core.publisher.Mono;
 import reactor.test.StepVerifier;
 
+import java.time.Instant;
 import java.util.List;
 
 import static org.hamcrest.Matchers.containsInAnyOrder;
@@ -65,7 +66,7 @@ class ContentRouterTest extends MongoTestContainerParent {
      */
     @BeforeAll
     static void setUp(@Autowired MongoOperations mongoOperations) {
-        mongoOperations.getCollectionNames().forEach(collectionName -> mongoOperations.dropCollection(collectionName));
+        mongoOperations.getCollectionNames().forEach(mongoOperations::dropCollection);
     }
 
 
@@ -74,15 +75,45 @@ class ContentRouterTest extends MongoTestContainerParent {
     class contentLifeCycleTest{
         @Test
         @WithMockUser(authorities = "ADMIN")
-        @DisplayName("/temp-content 요청시 post 생성 및 생성된 post가 반환되어야 한다.")
+        @DisplayName("/temp-content 요청시 post 생성 및 생성된 post가 반환되어야 한다. createdAt은 지금 시점 직전이어야 한다.")
         void tempContentPost() {
             webTestClient.post().uri("/temp-content")
                     .exchange()
                     .expectStatus().isOk()
                     .expectBody().jsonPath("$.id").isNotEmpty()
-                    .consumeWith( exchangeResult ->
-                            System.out.println(new String(exchangeResult.getResponseBody()))
-                    );
+                    .jsonPath("$.createdAt").value(i -> {
+                        var createdAt = Instant.parse(i.toString());
+                        var now = Instant.now();
+                        assertTrue(createdAt.isBefore(now));
+                    });
+        }
+
+        @Test
+        @WithMockUser(authorities = "ADMIN")
+        @DisplayName("temp content 작성중 /put/{id}로 임시 저장할 경우 temp-content post당시 생성된 createdAt이 그대로 존재해야 한다.")
+        void tempContentPutWithCreatedAtExists() {
+            tempContentPost();
+            var tempContent = contentRepository.findAll().filter(i->i.getId()>10000000).take(1).single().block();
+            var tempContentCreatedAt = tempContent.getCreatedAt();
+            ContentDto.Put tempContentPutDto = ContentMapper.INSTANCE.contentEntityToPut(tempContent);
+            tempContentPutDto.setTagList(List.of(new Tag("tag1"), new Tag("tag2"), new Tag("tag3")));
+            tempContentPutDto.setCategoryIdList(List.of());
+            tempContentPutDto.setRenderedContent("<h1>renderedContent</h1>");
+            tempContentPutDto.setRawContent("# rawContent");
+            tempContentPutDto.setTitle("title test");
+            tempContentPutDto.setContentFormat(ContentFormat.MARKDOWN);
+            webTestClient.put().uri("/content/" + tempContent.getId())
+                    .accept(MediaType.APPLICATION_JSON)
+                    .body(Mono.just(tempContentPutDto), Content.class)
+                    .exchange()
+                    .expectStatus().isOk()
+                    .expectBody()
+                    //json path test Content.class structure
+                    .jsonPath("$.id").value(id -> assertEquals(tempContentPutDto.getId(), Long.valueOf(id.toString())))
+                    .jsonPath("$.createdAt").value(createdAt -> {
+                        var createdAtInstant = Instant.parse(createdAt.toString());
+                        assertEquals(createdAtInstant, tempContentCreatedAt);
+                    });
         }
         @Test
         @WithMockUser(authorities = "ADMIN")
@@ -133,7 +164,7 @@ class ContentRouterTest extends MongoTestContainerParent {
                     .expectStatus().isOk()
                     .expectBody()
                     //json path test Content.class structure
-                    .jsonPath("$.id").value(id -> assertTrue(() -> Long.parseLong(id.toString()) < 1000l))
+                    .jsonPath("$.id").value(id -> assertTrue(() -> Long.parseLong(id.toString()) < 1000L))
                     .jsonPath("$.title").value(title -> assertEquals(tempContentPostDto.getTitle(), title))
                     .jsonPath("$.tagList").isArray()
                     .jsonPath("$.tagList").value(hasSize(tempContentPostDto.getTagList().size()))
@@ -149,9 +180,6 @@ class ContentRouterTest extends MongoTestContainerParent {
                                     .verify();
                         }
                     );
-            ;
-
-
         }
 
         @Test
@@ -174,7 +202,7 @@ class ContentRouterTest extends MongoTestContainerParent {
                     .expectStatus().isOk()
                     .expectBody()
                     //json path test Content.class structure
-                    .jsonPath("$.id").value(id -> assertTrue(() -> Long.parseLong(id.toString()) < 1000l))
+                    .jsonPath("$.id").value(id -> assertTrue(() -> Long.parseLong(id.toString()) < 1000L))
                     .jsonPath("$.title").value(title -> assertEquals(tempContentPostDto.getTitle(), title))
                     .jsonPath("$.tagList").isArray()
                     .jsonPath("$.tagList").value(hasSize(0))
@@ -225,13 +253,14 @@ class ContentRouterTest extends MongoTestContainerParent {
             contentRepository.deleteAll().block();
             reactiveMongoOperations.remove(ContentSequence.class).all().block();
         }
+
+
     }
 
     /**
      *      given : ContentDto.Put tagList is empty
      *      when : call put /content/{id}
      *      then : return 200. and saved content tagList is empty
-     *
      *      */
     @Test
     @WithMockUser(authorities = "ADMIN")
@@ -256,7 +285,7 @@ class ContentRouterTest extends MongoTestContainerParent {
                 .expectStatus().isOk()
                 .expectBody()
                 //json path test Content.class structure
-                .jsonPath("$.id").value(id -> assertTrue(() -> tempContentPostDto.getId() < 1000l))
+                .jsonPath("$.id").value(id -> assertTrue(() -> tempContentPostDto.getId() < 1000L))
                 .jsonPath("$.title").value(title -> assertEquals(tempContentPostDto.getTitle(), title))
                 .jsonPath("$.tagList").isArray()
                 .jsonPath("$.tagList").value(hasSize(tempContentPostDto.getTagList().size()))

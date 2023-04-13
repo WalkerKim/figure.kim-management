@@ -1,5 +1,6 @@
 package kim.figure.site.management.content;
 
+import kim.figure.site.common.category.Category;
 import kim.figure.site.common.content.Content;
 import kim.figure.site.common.tag.Tag;
 import kim.figure.site.management.category.CategoryRepository;
@@ -53,59 +54,59 @@ public class ContentService {
 
     public Mono<Content> putContent(Mono<ContentDto.Put> monoDto, Long id) {
         return monoDto.map(validationUtil::validateWithIdentity)
-                .map(content->{
-                    if(content.getDescription()==null || content.getDescription().trim().equals("")){
-                        content.setDescription(
-                                extractDescriptionFromHtml(content.getRenderedContent())
+                .map(putDto -> {
+                    if (putDto.getDescription() == null || putDto.getDescription().trim().equals("")) {
+                        putDto.setDescription(
+                                extractDescriptionFromHtml(putDto.getRenderedContent())
                         );
                     }
-                    return content;
+                    return putDto;
                 })
-                .flatMap(dto-> {
-                    dto.setId(id);
-                    saveTagToTagRepository(dto.getTagList()).subscribe();
-                    return Mono.zip(Mono.just(ContentMapper.INSTANCE.contentPutToEntity(dto)), categoryRepository.findAllById(dto.getCategoryIdList()).collectList());
-                })
-                .map(tuple2 -> {
-                    var content = tuple2.getT1();
-                    content.setCategoryList(tuple2.getT2());
-                    return content;
-                })
-                .flatMap(contentEntity -> contentRepository.save(contentEntity));
+                .flatMap(dto -> saveTagToTagRepository(dto.getTagList()).then(Mono.zip(contentRepository.findById(id), categoryRepository.findAllById(dto.getCategoryIdList()).collectList(), Mono.just(dto))))
+                .flatMap(tuple3 -> {
+                    ContentMapper.INSTANCE.updateContentFromPut(tuple3.getT3(), tuple3.getT1());
+                    tuple3.getT1().setCategoryList(tuple3.getT2());
+                    return contentRepository.save(tuple3.getT1());
+                });
     }
 
 
     public Mono<Content> postContent(Mono<ContentDto.Post> postMono) {
         return postMono.map(validationUtil::validateWithIdentity)
-                .flatMap(dto-> Mono.zip(Mono.just(dto), contentSequenceService.getSeq(Content.SEQUENCE_NAME)))
-                .flatMap(tuple2->{
+                .flatMap(dto -> Mono.zip(Mono.just(dto), contentSequenceService.getSeq(Content.SEQUENCE_NAME)))
+                .flatMap(tuple2 -> {
                     //get new content id
                     //copy temp images to new content id directory
                     final String tempImageDir = projectStaticPath + "/assets/image/" + tuple2.getT2();
                     Path tempImagePath = Path.of(tempImageDir);
                     boolean tempImageDirectoryExists = Files.exists(tempImagePath);
-                    if(!tempImageDirectoryExists){
-                        //temp content has no images
-                    }else{
-                        final String destImageDir = projectStaticPath + "/assets/image/" + tuple2.getT2();
-                        try {
-                            Files.move(tempImagePath, Path.of(destImageDir));
-                        } catch (IOException e) {
-                            return Mono.error(new RuntimeException("Cannot move image directory [" + tempImagePath +"] to ["+destImageDir+"]" ));
-                        }
-                    }
+                    var moveImagePathMono = Mono.fromCallable(() -> {
+                                final String destImageDir = projectStaticPath + "/assets/image/" + tuple2.getT2();
+                                if (!tempImageDirectoryExists) {
+                                    return Mono.empty();
+                                } else {
+                                    return Files.move(tempImagePath, Path.of(destImageDir));
+                                }
+                            })
+                            .onErrorMap(IOException.class, e -> new RuntimeException("Cannot move image directory [" + tempImagePath + "] to [" + projectStaticPath + "/assets/image/" + tuple2.getT2() + "]"))
+                            .then();
+
+                    return moveImagePathMono.then(Mono.just(tuple2));
+                })
+                .flatMap(tuple2 -> {
                     Content content = ContentMapper.INSTANCE.contentPostToEntity(tuple2.getT1());
-                    content.setRawContent(content.getRawContent().replaceAll("/assets/image/"+tuple2.getT1().getId(),"/assets/image/"+tuple2.getT2()));
-                    content.setRenderedContent(content.getRenderedContent().replaceAll("/assets/image/"+tuple2.getT1().getId(),"/assets/image/"+tuple2.getT2()));
-                    if(content.getDescription()==null || content.getDescription().trim().equals("")){
+                    content.setRawContent(content.getRawContent().replaceAll("/assets/image/" + tuple2.getT1().getId(), "/assets/image/" + tuple2.getT2()));
+                    content.setRenderedContent(content.getRenderedContent().replaceAll("/assets/image/" + tuple2.getT1().getId(), "/assets/image/" + tuple2.getT2()));
+                    if (content.getDescription() == null || content.getDescription().trim().equals("")) {
                         content.setDescription(
                                 extractDescriptionFromHtml(content.getRenderedContent())
                         );
                     }
                     saveTagToTagRepository(tuple2.getT1().getTagList()).subscribe();
                     content.setId(tuple2.getT2());
-                    return Mono.zip(Mono.just(content), Mono.just(tuple2.getT1().getId()), categoryRepository.findAllById(tuple2.getT1().getCategoryIdList()).collectList());
-                })
+                    return saveTagToTagRepository(tuple2.getT1().getTagList())
+                            .then(Mono.zip(Mono.just(content), Mono.just(tuple2.getT1().getId()), categoryRepository.findAllById(tuple2.getT1().getCategoryIdList()).collectList()));
+                }).doOnNext(tuple3 -> saveTagToTagRepository(tuple3.getT1().getTagList()).subscribe())
                 .flatMap(tuple3 -> contentRepository.findById(tuple3.getT2()).flatMap(tempContent -> {
                     Content newContent = tuple3.getT1();
                     newContent.setCreatedAt(tuple3.getT1().getCreatedAt());
@@ -115,9 +116,7 @@ public class ContentService {
                     if (newContent.getIsPublished()) {
                         newContent.setPublishedAt(Instant.now());
                     }
-                    return contentRepository.save(newContent).doOnSuccess(i-> {
-                        contentRepository.deleteById(tuple3.getT2()).subscribe();
-                    });
+                    return contentRepository.save(newContent).doOnSuccess(i -> contentRepository.deleteById(tuple3.getT2()).subscribe());
                 }));
     }
 
@@ -132,25 +131,21 @@ public class ContentService {
 
     }
 
-    public Publisher<Content> getContentList(MultiValueMap<String, String> params ) {
-        String sortColumnName = params.getOrDefault("order",List.of("id")).get(0);
-        String sortDirection = params.getOrDefault("dir",List.of("desc")).get(0);
+    public Publisher<Content> getContentList(MultiValueMap<String, String> params) {
+        String sortColumnName = params.getOrDefault("order", List.of("id")).get(0);
+        String sortDirection = params.getOrDefault("dir", List.of("desc")).get(0);
         var sort = Sort.by(sortColumnName);
-        if(sortDirection.equals("desc")){
+        if (sortDirection.equals("desc")) {
             sort = sort.descending();
-        }else if(sortDirection.equals("asc")){
+        } else if (sortDirection.equals("asc")) {
             sort = sort.ascending();
         }
         var pageRequest = PageRequest.of(Integer.parseInt(params.get("offset").get(0)), Integer.parseInt(params.get("limit").get(0)), sort);
-        Flux<Content> contentEntityFlux = Mono.just(pageRequest).flatMapMany(contentRepository::findBy);
-        return contentEntityFlux;
+        return Mono.just(pageRequest).flatMapMany(contentRepository::findBy);
     }
 
-    private Flux<Tag> saveTagToTagRepository(List<Tag> tagList){
-        return tagRepository.saveAll(tagList.stream().map(tag->{
-            tag.setId(tag.getId().replaceAll(" ", ""));
-            return tag;
-        }).distinct().toList());
+    private Flux<Tag> saveTagToTagRepository(List<Tag> tagList) {
+        return tagRepository.saveAll(tagList.stream().peek(tag -> tag.setId(tag.getId().replaceAll(" ", ""))).distinct().toList());
     }
 
     public Mono<Long> getContentCount() {
@@ -159,9 +154,9 @@ public class ContentService {
     }
 
     public Mono<ContentDto.TempGet> postTempContent() {
-        return contentRepository.save(Content.builder().id(Instant.now().getEpochSecond()).lastModifiedAt(Instant.now()).createdAt(Instant.now()).isPublished(false).isDraft(true).categoryList(new ArrayList<>()).build()).map(content->{
+        return contentRepository.save(Content.builder().id(Instant.now().getEpochSecond()).lastModifiedAt(Instant.now()).createdAt(Instant.now()).isPublished(false).isDraft(true).categoryList(new ArrayList<>()).build()).map(content -> {
             ContentDto.TempGet getDto = ContentMapper.INSTANCE.contentEntityToGet(content);
-            getDto.setCategoryIdList(content.getCategoryList().stream().map(i -> i.getId()).toList());
+            getDto.setCategoryIdList(content.getCategoryList().stream().map(Category::getId).toList());
             return getDto;
         });
 

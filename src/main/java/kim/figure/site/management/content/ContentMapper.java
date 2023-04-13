@@ -2,6 +2,7 @@ package kim.figure.site.management.content;
 
 import kim.figure.site.common.content.Content;
 import org.mapstruct.Mapper;
+import org.mapstruct.MappingTarget;
 import org.mapstruct.factory.Mappers;
 
 @Mapper
@@ -12,7 +13,7 @@ public interface ContentMapper {
     ContentDto.Put contentEntityToPut(Content content);
     ContentDto.Post contentEntityToPost(Content content);
 
-    Content contentPutToEntity(ContentDto.Put postContent);
+    void updateContentFromPut(ContentDto.Put putContent, @MappingTarget Content content);
 
     ContentDto.TempGet contentEntityToGet(Content content);
 }
