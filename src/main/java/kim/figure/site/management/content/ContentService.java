@@ -23,6 +23,7 @@ import java.nio.file.Path;
 import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 import static kim.figure.site.management.common.JsoupUtils.extractDescriptionFromHtml;
 
@@ -65,6 +66,11 @@ public class ContentService {
                 .flatMap(dto -> saveTagToTagRepository(dto.getTagList()).then(Mono.zip(contentRepository.findById(id), categoryRepository.findAllById(dto.getCategoryIdList()).collectList(), Mono.just(dto))))
                 .flatMap(tuple3 -> {
                     ContentMapper.INSTANCE.updateContentFromPut(tuple3.getT3(), tuple3.getT1());
+                    if (tuple3.getT1().getIsPublished()) {
+                        if(tuple3.getT1().getPublishedAt()==null){
+                            tuple3.getT1().setPublishedAt(Instant.now());
+                        }
+                    }
                     tuple3.getT1().setCategoryList(tuple3.getT2());
                     return contentRepository.save(tuple3.getT1());
                 });
@@ -114,7 +120,9 @@ public class ContentService {
                     newContent.setLastModifiedAt(Instant.now());
                     newContent.setCategoryList(tuple3.getT3());
                     if (newContent.getIsPublished()) {
-                        newContent.setPublishedAt(Instant.now());
+                        if(newContent.getPublishedAt()==null){
+                            newContent.setPublishedAt(Instant.now());
+                        }
                     }
                     return contentRepository.save(newContent).doOnSuccess(i -> contentRepository.deleteById(tuple3.getT2()).subscribe());
                 }));
