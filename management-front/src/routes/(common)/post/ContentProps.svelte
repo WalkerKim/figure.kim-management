@@ -101,6 +101,28 @@
                        class="col-span-1 border-black border w-full shadow appearance-none border rounded py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline">
             </div>
         </div>
+        <div class="col-span-full py-1 my-2 flex gap-5">
+            <div class="flex">
+                <label for="publishedAt" class="self-center flex"> publishedAt</label>
+                <label for="ogKeywordList" class="self-center px-3 flex"> : </label>
+                <div class="flex">
+                    <p type="text" name="publishedAt" id="publishedAt"
+                       class="">
+                        {new Date(content.publishedAt).toLocaleDateString()}
+                    </p>
+                </div>
+            </div>
+            <div class=" flex">
+                <label for="lastModifiedAt" class="self-center flex"> lastModifiedAt</label>
+                <label for="lastModifiedAt" class="self-center px-3 flex"> : </label>
+                <div class="flex">
+                    <p type="text" name="lastModifiedAt" id="lastModifiedAt"
+                       class="">
+                        {new Date(content.lastModifiedAt).toLocaleDateString()}
+                    </p>
+                </div>
+            </div>
+        </div>
 
     </div>
 </template>

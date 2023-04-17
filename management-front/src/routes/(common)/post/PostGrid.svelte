@@ -150,33 +150,34 @@
         autoWidth:false,
         columns: [
             {
-                id: "createdAt", formatter: (cell, row) => new Date(cell).toLocaleString()
+                id: "createdAt", formatter: (cell, row) => new Date(cell).toLocaleDateString()
                 ,
                 name: "createAt"
             },
             {id: "id", name: "id"},
             {id: "title", name: "title", width: "50%"},
-            {id: "description", name: "description", formatter: cell=>{
-                    if((cell??"").length >10){
-                        return cell.substring(0, 20) + "...";
-                    }else{
-                        return cell;
-                    }
-                    return cell
-                }},
+            // {id: "description", name: "description", formatter: cell=>{
+            //         if((cell??"").length >10){
+            //             return cell.substring(0, 20) + "...";
+            //         }else{
+            //             return cell;
+            //         }
+            //         return cell
+            //     }},
             {id: "isDraft", name: "isDraft", formatter: cell => cell ? "true" : "false"},
             {id: "isPublished", name: "isPublished", formatter: cell => cell ? "true" : "false"},
-            {
-                id: "tagList", name: "tagList", formatter: (cell, row) => {
-                    return Array.isArray(cell) ? cell.map(i => i.id).join(", ") : cell;
-                }
-            },
-            {
-                id: "categoryList", name: "Category", width : "10px", formatter: (cell, row) => {
-                    return Array.isArray(cell) ? cell.map(i => i.id).join(", ") : cell;
-                }
-            },
-            {id: "lastModifiedAt", name: "lastModifiedAt", formatter: cell => new Date(cell).toLocaleString()},
+            // {
+            //     id: "tagList", name: "tagList", formatter: (cell, row) => {
+            //         return Array.isArray(cell) ? cell.map(i => i.id).join(", ") : cell;
+            //     }
+            // },
+            // {
+            //     id: "categoryList", name: "Category", width : "10px", formatter: (cell, row) => {
+            //         return Array.isArray(cell) ? cell.map(i => i.id).join(", ") : cell;
+            //     }
+            // },
+            {id: "lastModifiedAt", name: "lastModifiedAt", formatter: cell => new Date(cell).toLocaleDateString()},
+            {id: "publishedAt", name: "publishedAt", formatter: cell => new Date(cell).toLocaleDateString()},
             {
                 id: "id", name: "action", formatter: (cell, row) => {
                     return h('div', {className: 'inline-flex w-full', id: 'foo'},
